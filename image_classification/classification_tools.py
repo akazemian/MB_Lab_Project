@@ -1,26 +1,19 @@
 #libraries
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression 
-from sklearn.model_selection import cross_val_predict
-from sklearn.metrics import top_k_accuracy_score as top_k
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.neighbors import NearestCentroid
 from sklearn.utils.validation import check_array, check_is_fitted
 from sklearn.metrics.pairwise import pairwise_distances
 from sklearn.model_selection import StratifiedKFold
-from collections import Counter
 from sklearn import svm
-from sklearn.model_selection import cross_val_predict
 from itertools import combinations
 from tqdm import tqdm
 import random
 import numpy as np
 from scipy.special import softmax
-import torchvision
-from sklearn.metrics import confusion_matrix
 import torch
-from tqdm import tqdm
 import pickle
 import functools
 
