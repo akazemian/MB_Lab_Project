@@ -92,7 +92,7 @@ python image_classification/run.py
 
 ## 3. Generating figures
 
-Navigate to the ```figures``` folder, here you will find notebooks that can be run to produce each figure individually. The figures are saved in ```figures/manuscript_figures```
+Navigate to the ```figures``` folder. Here you will find notebooks for generating each figure individually. These are saved in ```figures/manuscript_figures```
 
 ## 4. Information about datasets:
 
