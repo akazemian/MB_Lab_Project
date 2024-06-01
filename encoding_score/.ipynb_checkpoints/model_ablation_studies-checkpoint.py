@@ -1,11 +1,28 @@
 import os
-import runpy
+import logging
+import subprocess
+import argparse
 
-PATH = f'/home/akazemi3/Desktop/untrained_models_of_visual_cortex/model_evaluation/predicting_brain_data'
+from config import CACHE, setup_logging
 
+def main(dataset_name):
+    setup_logging()
+    script_list = ['random_models','init_type', 'non_linearity','local_connectrivity','linear_models']
 
-for score_type in ['shuffled_pixels_score','non_linearity_score', 'init_type_score', 
-                  'random_model_score', 'linear_model_score']: 
+    for i, script in enumerate(script_list):
+        logging.info(f'\033[1m Running script for {script} (total scripts left = {len(script_list) - i}) \033[0m')
+        script_path = os.path.join(os.getcwd(), 'encoding_score', f'{script}.py')
+        command = ['python', script_path, f'--dataset={dataset_name}']
+        result = subprocess.run(command, text=True, capture_output=True)
 
-    script_path = os.path.join(PATH,f'{score_type}_score.py')
-    runpy.run_path(script_path)
+        # Log the output and errors
+        logging.info(result.stdout)
+        if result.stderr:
+            logging.error(result.stderr)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Run scripts with dataset selection.")
+    parser.add_argument('--dataset', required=True, help="Specify the dataset name")
+    args = parser.parse_args()
+
+    main(args.dataset)
