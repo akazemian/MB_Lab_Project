@@ -52,7 +52,7 @@ Clone this repository and navigate to the repository folder.
 git clone https://github.com/akazemian/untrained_models_of_visual_cortex.git
 ```
 
-In the root directory, open ```config.py``` and change your ```DATA``` and ```CACHE``` paths. Default is (```/```)
+In the root directory, open ```config.py``` and change your ```DATA``` and ```CACHE``` paths. Default is ```/```.
 
     - The ```DATA``` path is where the datasets will be downloaded to.
     - The ```CACHE``` path is where all analysis and results will be saved.
@@ -68,7 +68,7 @@ pip install -r requirements.txt
 
 ## 2. Generating results files
 
-Navigate to the project directory and make sure to specify the dataset ('majajhong' or 'naturalscenes') when running the following.
+Navigate to the project directory and make sure to specify the dataset (```majajhong``` or ```naturalscenes```) when running the following.
 
 To generate brain similarity score for the untrained models and alexnet: 
 ```
