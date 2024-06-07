@@ -1,6 +1,5 @@
 pillow
 boto3
-cupy
 opencv-python
 dropbox
 loguru
@@ -18,3 +17,4 @@ torchmetrics
 torchvision
 tqdm
 xarray
+netCDF4

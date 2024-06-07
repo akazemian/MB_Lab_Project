@@ -1,7 +1,5 @@
 import os
 import pandas as pd
-import sys
-import pickle
 from config import DATA
 from .utils import download_data_from_dropbox
 
@@ -16,7 +14,6 @@ def load_nsd_images():
     NSD_IMAGES = os.path.join(DATA,'naturalscenes','images')
     return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])
     
-    
         
 def load_majaj_images():
     
@@ -29,7 +26,6 @@ def load_majaj_images():
     download_data_from_dropbox('majajhong')
     MAJAJ_IMAGES = os.path.join(DATA,'majajhong','image_dicarlo_hvm-public')
     return sorted([f'{MAJAJ_IMAGES}/{image}' for image in os.listdir(MAJAJ_IMAGES)])
-    
     
     
     
@@ -93,7 +89,6 @@ def load_image_paths(dataset_name):
 
 
 def get_image_labels(dataset_name, image_paths):
-    
     
     """
     Get image labels based on a specified dataset.

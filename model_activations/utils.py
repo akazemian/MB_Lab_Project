@@ -5,7 +5,7 @@ import torch
 import gc
 import logging
 
-from config import CACHE, DATA, setup_logging
+from config import CACHE, setup_logging
 setup_logging()
 
 def register_pca_hook(x: torch.Tensor, pca_file_name: str, n_components, 

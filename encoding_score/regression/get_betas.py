@@ -1,16 +1,7 @@
-import sys
-import xarray as xr
-import numpy as np
-import torch
 import os
-import functools
-import gc
-import pickle 
 import logging
 
-from ..benchmarks.nsd import nsd_scorer, nsd_get_best_layer_scores
-from ..benchmarks.majajhong import majajhong_scorer, majajhong_get_best_layer_scores
-from config import CACHE, DATA, setup_logging
+from config import CACHE, setup_logging
 setup_logging()
 
 class NeuralRegression():
@@ -52,24 +43,28 @@ class NeuralRegression():
         match self.dataset:
             
             case 'naturalscenes' | 'naturalscenes_shuffled':
+                from ..benchmarks.nsd import nsd_scorer, nsd_get_best_layer_scores
+                
                 if type(self.activations_identifier) == list:
-                    data = nsd_get_best_layer_scores(activations_identifier= self.activations_identifier, 
+                    nsd_get_best_layer_scores(activations_identifier= self.activations_identifier, 
                                                    region= self.region,
                                                   device = self.device)                  
                 else:
-                    data = nsd_scorer(activations_identifier = self.activations_identifier, 
+                    nsd_scorer(activations_identifier = self.activations_identifier, 
                                     region = self.region,
                                     device = self.device)
 
             case 'majajhong' | 'majajhong_shuffled':
                 
+                from ..benchmarks.majajhong import majajhong_scorer, majajhong_get_best_layer_scores
+                
                 if type(self.activations_identifier) == list:
-                    data = majajhong_get_best_layer_scores(activations_identifier= self.activations_identifier, 
+                    majajhong_get_best_layer_scores(activations_identifier= self.activations_identifier, 
                                                          region= self.region,
                                                          device = self.device)                  
                 
                 else:
-                    data = majajhong_scorer(activations_identifier = self.activations_identifier, 
+                    majajhong_scorer(activations_identifier = self.activations_identifier, 
                                         region = self.region,
                                         device = self.device)        
         return 

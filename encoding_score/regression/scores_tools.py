@@ -9,14 +9,10 @@ import gc
 import os
 import logging
 
-from encoding_score.benchmarks.majajhong import load_majaj_data
-from encoding_score.benchmarks.nsd import load_nsd_data,filter_activations
 from model_activations.models.utils import load_full_identifier, find_best_layer_iden
 from config import CACHE, DATA, setup_logging
 setup_logging()
 
-SHARED_IDS = pickle.load(open(os.path.join(DATA,'naturalscenes','nsd_ids_shared'), 'rb'))
-SHARED_IDS = [image_id.strip('.png') for image_id in SHARED_IDS]
 PREDS_PATH = os.path.join(CACHE,'neural_preds')
 BOOTSTRAP_RESULTS_PATH = os.path.join(CACHE,'bootstrap_r_values')
 
@@ -183,14 +179,19 @@ def batch_pearson_r(all_sampled_tests, all_sampled_preds, batch_size, n_bootstra
 
 
 def load_data(identifier, region, subject, dataset):
+    
     with open(os.path.join(PREDS_PATH, f'{identifier}_{region}_{subject}.pkl'), 'rb') as file:
             preds = torch.Tensor(pickle.load(file))
-    
     if 'naturalscenes' in dataset:
+        from encoding_score.benchmarks.nsd import load_nsd_data
         _, neural_data_test = load_nsd_data(mode='shared', subject=subject, region=region)
         test = torch.Tensor(neural_data_test['beta'].values)
-    else:
+    elif 'majajhong' in dataset:
+        from encoding_score.benchmarks.majajhong import load_majaj_data
         test = load_majaj_data(subject, region, 'test')
+    else:
+        raise ValueError('Invalid dataset name')
+    
     return preds, test
 
 

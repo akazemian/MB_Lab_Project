@@ -1,6 +1,6 @@
 # set paths
-DATA = '/data/atlas/data' # path to datasets
-CACHE = '/data/atlas/.cache_new' # path to everything that will be cached
+DATA = '/home/atlask/data/atlas/repo_data' # path to datasets
+CACHE = '/home/atlask/data/atlas/.repo_cache' # path to everything that will be cached
 
 
 # logging 
