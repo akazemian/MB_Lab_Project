@@ -31,10 +31,6 @@ ALPHA_RANGE = [10**i for i in range(10)]
 def majajhong_scorer(activations_identifier: str, 
                        region: str,
                        device:str):
-
-    
-    X_train = load_activations(activations_identifier, mode = 'train')
-    X_test = load_activations(activations_identifier, mode = 'test')
     
     pbar = tqdm(total = 2)
     
@@ -42,6 +38,10 @@ def majajhong_scorer(activations_identifier: str,
         file_path =  Path(PREDS_PATH) / f'{activations_identifier}_{region}_{subject}.pkl'
         
         if not os.path.exists(file_path):
+            
+            X_train = load_activations(activations_identifier, mode = 'train')
+            X_test = load_activations(activations_identifier, mode = 'test')
+
             y_train = load_majaj_data(subject= subject, region= region, mode = 'train')
             y_test = load_majaj_data(subject= subject, region= region, mode = 'test')
     
@@ -97,13 +97,14 @@ def get_best_model_layer(activations_identifier, region, device):
 def majajhong_get_best_layer_scores(activations_identifier: list, region: str, device:str):
 
         best_layer, best_alphas = get_best_model_layer(activations_identifier, region, device)            
-        X_train = load_activations(best_layer, mode = 'train')
-        X_test = load_activations(best_layer, mode = 'test')
 
         for subject in tqdm(range(len(SUBJECTS))):
             file_path = Path(PREDS_PATH) / f'{best_layer}_{region}_{SUBJECTS[subject]}.pkl'
             
             if not os.path.exists(file_path):
+                X_train = load_activations(best_layer, mode = 'train')
+                X_test = load_activations(best_layer, mode = 'test')
+
                 y_train = load_majaj_data(subject= SUBJECTS[subject], region= region, mode = 'train')
                 y_test = load_majaj_data(subject= SUBJECTS[subject], region= region, mode = 'test')
                 y_true, y_predicted = regression_shared_unshared(x_train=X_train,

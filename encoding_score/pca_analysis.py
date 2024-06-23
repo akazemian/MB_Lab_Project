@@ -9,13 +9,13 @@ from model_activations.models.configs import analysis_cfg as cfg
 from model_activations.activation_extractor import Activations
 from encoding_score.regression.get_betas import NeuralRegression
 from encoding_score.regression.scores_tools import get_bootstrap_rvalues
-from config import CACHE, DATA, setup_logging
+from config import CACHE, setup_logging
 from eigen_analysis.compute_pcs import compute_model_pcs
 setup_logging()
 
 MODEL_NAME = 'expansion'
 
-def main(dataset):
+def main(dataset, device):
        
     N_BOOTSTRAPS = 1000
     N_ROWS = cfg[dataset]['test_data_size']
@@ -34,9 +34,11 @@ def main(dataset):
     
         # compute model PCs using the train set
         if not os.path.exists(os.path.join(CACHE,'pca',pca_identifier)):
-            compute_model_pcs(model_name = MODEL_NAME, features = features, 
+            compute_model_pcs(model_name = MODEL_NAME, 
+                              features = features, 
                               layers = cfg[dataset]['analysis']['pca']['layers'], 
-                              dataset = dataset, components = TOTAL_COMPONENTS, device = 'cuda')
+                              dataset = dataset, 
+                              components = TOTAL_COMPONENTS, device = device)
             
         # project activations onto the computed PCs 
         for n_components in N_COMPONENTS:
@@ -49,20 +51,25 @@ def main(dataset):
             
             logging.info(f"Model: {activations_identifier}, Components = {n_components}, Region: {cfg[dataset]['regions']}")
             #load model
-            model = load_model(model_name=MODEL_NAME, features=features, 
-                                   layers=cfg[dataset]['analysis']['pca']['layers'])
+            model = load_model(model_name=MODEL_NAME, 
+                               features=features, 
+                                   layers=cfg[dataset]['analysis']['pca']['layers'],
+                                   device=device)
 
             # compute activations and project onto PCs
-            Activations(model=model, dataset=dataset, pca_iden = pca_identifier,
-                        n_components = n_components, batch_size = 100,
-                        device= 'cuda').get_array(activations_identifier)  
+            Activations(model=model, 
+                        dataset=dataset, 
+                        pca_iden = pca_identifier,
+                        n_components = n_components, 
+                        batch_size = 100,
+                        device= device).get_array(activations_identifier)  
 
 
             # predict neural data in a cross validated manner using model PCs
             NeuralRegression(activations_identifier=activations_identifier,
                              dataset=dataset,
                              region=cfg[dataset]['regions'],
-                             device= 'cuda').predict_data()
+                             device= device).predict_data()
 
             gc.collect()
 
@@ -76,13 +83,16 @@ def main(dataset):
                     subjects=cfg[dataset]['subjects'],
                     region=cfg[dataset]['regions'],
                     all_sampled_indices=ALL_SAMPLED_INDICES,
-                    device='cpu',
+                    device=device,
                     file_name= 'pca')
     gc.collect()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='majajhong', help='name of neural dataset')
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Run scripts with dataset selection.")
+    parser.add_argument('--dataset', required=True, help="Specify the dataset name",
+                        type=str, choices=['naturalscenes', 'majajhong'])
+    parser.add_argument('--device', required=False, help="Specify device name",
+                        type=str, choices=['cpu', 'cuda'])
     args = parser.parse_args()
-    main(args.dataset)
+    main(args.dataset, args.device)

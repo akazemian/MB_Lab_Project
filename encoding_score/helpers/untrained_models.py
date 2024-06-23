@@ -8,12 +8,12 @@ from model_activations.models.configs import model_cfg as cfg
 from model_activations.activation_extractor import Activations
 from encoding_score.regression.get_betas import NeuralRegression
 from encoding_score.regression.scores_tools import get_bootstrap_rvalues
-from config import CACHE, DATA, setup_logging
+from config import setup_logging
 setup_logging()
 
 MODELS = ['expansion', 'fully_connected', 'vit']
 
-def main(dataset):
+def untrained_models_(dataset, device):
        
     N_BOOTSTRAPS = 1000
     N_ROWS = cfg[dataset]['test_data_size']
@@ -28,16 +28,22 @@ def main(dataset):
                                                         layers=cfg[dataset]['models'][model_name]['layers'], dataset=dataset)
                 logging.info(f'Model: {activations_identifier}, Region: {region}')
                     
-                model = load_model(model_name=model_name, features=features, 
-                                   layers=cfg[dataset]['models'][model_name]['layers'])
+                model = load_model(model_name=model_name, 
+                                   features=features, 
+                                   layers=cfg[dataset]['models'][model_name]['layers'],
+                                   device=device)
     
                 # extract activations 
-                Activations(model=model, dataset=dataset, device= 'cuda').get_array(activations_identifier) 
+                Activations(model=model, 
+                            dataset=dataset, 
+                            device= device).get_array(activations_identifier) 
     
     
                 # predict neural data in a cross validated manner
-                NeuralRegression(activations_identifier=activations_identifier, dataset=dataset,
-                                 region=region, device= 'cpu').predict_data()
+                NeuralRegression(activations_identifier=activations_identifier, 
+                                 dataset=dataset,
+                                 region=region, 
+                                 device= device).predict_data()
                 
 
             # get a bootstrap distribution of r-values between predicted and actual neural responses
@@ -48,13 +54,6 @@ def main(dataset):
                     subjects = cfg[dataset]['subjects'],
                     region=region,
                     all_sampled_indices=ALL_SAMPLED_INDICES,
-                    device='cuda')
+                    device=device)
             gc.collect()
                 
-            
-            
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='majajhong', help='name of neural dataset')
-    args = parser.parse_args()
-    main(args.dataset)

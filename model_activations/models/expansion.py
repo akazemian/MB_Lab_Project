@@ -79,7 +79,7 @@ class Expansion5L:
             pool1 = nn.AvgPool2d(kernel_size=2)
             self.filters_1 = conv1.layer_size
         else: # Random filters for layer 1
-            padding = math.floor(15 / 2) or random
+            padding = math.floor(15 / 2) 
             conv1, pool1 = self.create_layer(3, self.filters_1, (15, 15), padding=padding)
 
         # Setup layers 2 to 5

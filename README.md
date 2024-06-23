@@ -52,13 +52,13 @@ Clone this repository and navigate to the repository folder.
 git clone https://github.com/akazemian/untrained_models_of_visual_cortex.git
 ```
 
-In the root directory, open ```config.py``` and change your ```DATA``` and ```CACHE``` paths. Default is ```/```.
+Download the data used in all analysis [here](https://www.dropbox.com/scl/fo/ow0v17ldsax4iddtp82aj/AEwkme4Crdi0d80hv2zigC8?rlkey=sfzri315280ohr72mwyz9850j&st=4jxnohjt&dl=0). 
 
-  - The ```DATA``` path is where the datasets will be downloaded to.
-  - The ```CACHE``` path is where all analysis and results will be saved.
+
+In the root directory, open ```config.py``` and set the path for the data folder ```DATA```. 
+
 ```
 DATA = '/data' 
-CACHE = '/.cache' 
 ```
 
 Install required packages:

@@ -3,24 +3,25 @@ import gc
 import argparse
 import logging
 
-from model_activations.models.utils import load_model, load_full_identifier
+from model_activations.models.utils import load_full_identifier
 from model_activations.models.configs import analysis_cfg as cfg
 from model_activations.models.expansion import Expansion5L
 from model_activations.activation_extractor import Activations
 from encoding_score.regression.get_betas import NeuralRegression
 from encoding_score.regression.scores_tools import get_bootstrap_rvalues
-from config import CACHE, DATA, setup_logging
+from config import setup_logging
 setup_logging()
 
 MODEL_NAME = 'expansion'
-ANALYSIS = 'non_linearities'
+ANALYSIS = 'init_types'
 N_BOOTSTRAPS = 1000
 
-def main(dataset):
+def init_type_(dataset, device):
+    
     N_ROWS = cfg[dataset]['test_data_size']
     ALL_SAMPLED_INDICES = np.random.choice(N_ROWS, (N_BOOTSTRAPS, N_ROWS), replace=True) # Sample indices for all 
 
-    for non_linearity in cfg[dataset]['analysis'][ANALYSIS]['variations']:
+    for init_type in cfg[dataset]['analysis'][ANALYSIS]['variations']:
     
         for features in cfg[dataset]['analysis'][ANALYSIS]['features']:
                     
@@ -28,22 +29,25 @@ def main(dataset):
             activations_identifier = load_full_identifier(model_name=MODEL_NAME, features=features, 
                                                           layers=cfg[dataset]['analysis'][ANALYSIS]['layers'], 
                                                           dataset=dataset,
-                                                          non_linearity = non_linearity)
+                                                          init_type = init_type)
             logging.info(f"Model: {activations_identifier}, Region: {cfg[dataset]['regions']}")
                 
-            model = Expansion5L(filters_5=features, non_linearity=non_linearity).build()
+            model = Expansion5L(filters_5 = features, 
+                                init_type=init_type,
+                                device=device).build()
     
     
             # extract activations 
-            data = Activations(model=model, dataset=dataset, device='cuda', batch_size = 5).get_array(activations_identifier) 
-            del data
+            Activations(model=model, 
+                        dataset=dataset, 
+                        device=device).get_array(activations_identifier) 
     
     
             # predict neural data in a cross validated manner
             NeuralRegression(activations_identifier=activations_identifier,
                        dataset=dataset,
                        region=cfg[dataset]['regions'],
-                       device= 'cpu').predict_data()
+                       device= device).predict_data()
 
             gc.collect()
 
@@ -55,16 +59,10 @@ def main(dataset):
             subjects = cfg[dataset]['subjects'],
             region=cfg[dataset]['regions'],
             all_sampled_indices=ALL_SAMPLED_INDICES,
-            device='cpu',
-            non_linearity=cfg[dataset]['analysis'][ANALYSIS]['variations'],
-            file_name = 'non_linearity')
+            device=device,
+            init_type=cfg[dataset]['analysis'][ANALYSIS]['variations'],
+            file_name = 'init_types')
     gc.collect()
             
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='majajhong', help='name of neural dataset')
-    args = parser.parse_args()
-    main(args.dataset)
 

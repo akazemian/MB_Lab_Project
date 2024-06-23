@@ -18,3 +18,4 @@ torchvision
 tqdm
 xarray
 netCDF4
+cupy-cuda12x

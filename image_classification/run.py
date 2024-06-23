@@ -1,27 +1,22 @@
 import os
-import numpy as np 
-import gc
-import argparse
 import logging
 import pickle
 import xarray as xr 
 
-from classification_tools import get_Xy, cv_performance
+from config import CACHE, setup_logging
 from tools.loading import load_places_cat_labels
 from model_activations.models.utils import load_model, load_full_identifier
 from model_activations.models.configs import analysis_cfg as cfg
 from model_activations.activation_extractor import Activations
-from encoding_score.regression.get_betas import NeuralRegression
-from encoding_score.regression.scores_tools import get_bootstrap_rvalues
-from config import CACHE, setup_logging
+from image_classification.config_ import MODEL_NAMES, PCA_DATASET, DATASET, NUM_COMPONENTS
+from image_classification.classification_tools import get_Xy, cv_performance
+
 from eigen_analysis.compute_pcs import compute_model_pcs
 setup_logging()
 
-MODEL_NAMES = ['expansion','alexnet']
-PCA_DATASET = 'places_train'
-DATASET = 'places_val'
-NUM_COMPONENTS = 1000
-
+if not os.path.exists(CACHE):
+    os.makedirs(CACHE)
+    
 if not os.path.exists(os.path.join(CACHE,'classification')):
     os.mkdir(os.path.join(CACHE,'classification'))    
 

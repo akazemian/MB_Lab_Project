@@ -1,10 +1,6 @@
 from typing import Optional, Union
 import os
 
-from .alexnet import AlexNet
-from .expansion import Expansion5L
-from .fully_connected import FullyConnected5L
-from .vit import CustomViT
 from config import CACHE, DATA, setup_logging
 
 # Constants
@@ -61,22 +57,28 @@ def load_full_identifier(model_name: str, dataset: str, layers: int, features: O
     return iden_generator(identifier, extension)
 
 
-def load_model(model_name: str, features: Optional[int] = None, layers: Optional[int] = None) -> object:
+def load_model(device: str, model_name: str, features: Optional[int] = None, layers: Optional[int] = None) -> object:
     """Instantiates and builds a model based on the given model name and specifications."""
     match model_name:
         case 'expansion':
-            return Expansion5L(filters_5=features).build()
+            from .expansion import Expansion5L
+            return Expansion5L(filters_5=features, device= device).build()
         case 'expansion_linear':
-            return Expansion5L(filters_5=features, non_linearity='none').build()
+            from .expansion import Expansion5L
+            return Expansion5L(filters_5=features, non_linearity='none', device= device).build()
         case 'fully_connected':
-            return FullyConnected5L(features_5=features).build()
+            from .fully_connected import FullyConnected5L
+            return FullyConnected5L(features_5=features, device= device).build()
         case 'alexnet':
+            from .alexnet import AlexNet
             if layers not in ALEXNET_LAYER_NUMS:
                 raise ValueError("Invalid layer number for Alexnet model.")
-            return AlexNet(features_layer=ALEXNET_LAYER_NUMS[layers]).build()
+            return AlexNet(features_layer=ALEXNET_LAYER_NUMS[layers], device= device).build()
         case 'vit':
-            return CustomViT(out_features=features, block=VIT_BLOCK_NUM).build()
+            from .vit import CustomViT
+            return CustomViT(out_features=features, block=VIT_BLOCK_NUM, device= device).build()
         case 'fully_random':
-            return Expansion5L(filters_1=LAYER_1_RANDOM_FILTERS, filters_5=features).build()
+            from .expansion import Expansion5L
+            return Expansion5L(filters_1=LAYER_1_RANDOM_FILTERS, filters_5=features, device= device).build()
         case _:
             raise ValueError(f"Unknown model name: {model_name}")

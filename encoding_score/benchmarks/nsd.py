@@ -42,9 +42,7 @@ def nsd_scorer(activations_identifier: str,
                region: str,
               device: str):
     
-
         activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',activations_identifier), engine='h5netcdf')  
-
         for subject in tqdm(range(8)):
 
             ids_train, neural_data_train = load_nsd_data(mode ='unshared',

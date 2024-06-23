@@ -1,28 +1,28 @@
-import os
 import logging
-import subprocess
 import argparse
+from config import setup_logging
 
-from config import CACHE, setup_logging
+from helpers.pretrained_alexnet import pretrained_alexnet_
+from helpers.untrained_models import untrained_models_
 
-def main(dataset_name):
+def main(dataset_name, device):
     setup_logging()
-    script_list = ['pretrained_alexnet', 'untrained_models']
 
-    for i, script in enumerate(script_list):
-        logging.info(f'\033[1m Running script for {script} (total scripts left = {len(script_list) - i}) \033[0m')
-        script_path = os.path.join(os.getcwd(), 'encoding_score', f'{script}.py')
-        command = ['python', script_path, f'--dataset={dataset_name}']
-        result = subprocess.run(command, text=True, capture_output=True)
+    logging.info(f'\033[1m Running script for pretrained alexnet\033[0m')
+    pretrained_alexnet_(dataset_name, device)
 
-        # Log the output and errors
-        logging.info(result.stdout)
-        if result.stderr:
-            logging.error(result.stderr)
+    logging.info(f'\033[1m Running script for untrained_models\033[0m')
+    untrained_models_(dataset_name, device)  
+
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run scripts with dataset selection.")
-    parser.add_argument('--dataset', required=True, help="Specify the dataset name")
+    parser.add_argument('--dataset', required=True, help="Specify the dataset name",
+                        type=str, choices=['naturalscenes', 'majajhong'])
+    parser.add_argument('--device', required=False, help="Specify device name",
+                        type=str, choices=['cpu', 'cuda'])
     args = parser.parse_args()
 
-    main(args.dataset)
+    main(args.dataset, args.device)
