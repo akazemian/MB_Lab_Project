@@ -16,7 +16,7 @@ from eigen_analysis.compute_pcs import compute_model_pcs
 setup_logging()
 MODEL_NAME = 'expansion'
 
-def main(dataset, device):
+def main(dataset, device, batch_size):
        
     N_BOOTSTRAPS = 1000
     N_ROWS = cfg[dataset]['test_data_size']
@@ -39,7 +39,9 @@ def main(dataset, device):
                               features = features, 
                               layers = cfg[dataset]['analysis']['pca']['layers'], 
                               dataset = dataset, 
-                              components = TOTAL_COMPONENTS, device = device)
+                              components = TOTAL_COMPONENTS, 
+                              device = device,
+                              batch_size=batch_size)
             
         # project activations onto the computed PCs 
         for n_components in N_COMPONENTS:
@@ -93,7 +95,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run scripts with dataset selection.")
     parser.add_argument('--dataset', required=True, help="Specify the dataset name",
                         type=str, choices=['naturalscenes', 'majajhong'])
-    parser.add_argument('--device', required=False, help="Specify device name",
+    parser.add_argument('--device', default="cuda", help="Specify device name",
                         type=str, choices=['cpu', 'cuda'])
+    parser.add_argument('--batchsize', default=50, help="Specify the batch size to use",
+                        type=int)
     args = parser.parse_args()
-    main(args.dataset, args.device)
+    main(args.dataset, args.device, args.batchsize)

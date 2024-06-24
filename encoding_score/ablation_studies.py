@@ -34,8 +34,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run scripts with dataset selection.")
     parser.add_argument('--dataset', required=True, help="Specify the dataset name",
                         type=str, choices=['naturalscenes', 'majajhong'])
-    parser.add_argument('--device', required=False, help="Specify device name",
-                        type=str, choices=['cpu', 'cuda'])
+    parser.add_argument('--device', help="Specify device name",
+                        type=str, default = "cuda", choices=['cpu', 'cuda'])
     args = parser.parse_args()
 
     main(args.dataset, args.device)

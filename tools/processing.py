@@ -69,7 +69,7 @@ class ImageProcessor:
             os.mkdir(os.path.join(CACHE, 'preprocessed_images'))
 
     @staticmethod
-    def cache_file(image_paths, dataset, image_size=int(224/2)):
+    def cache_file(image_paths, dataset, image_size=224):
         if 'naturalscenes' in dataset:
             num_images = 73000
         else:
@@ -78,7 +78,7 @@ class ImageProcessor:
         return os.path.join('preprocessed_images', name)
 
     @cache(cache_file)
-    def process(self, image_paths, dataset, image_size=int(224/2)):
+    def process(self, image_paths, dataset, image_size=224):
         """
         Process and transform a list of images.
 

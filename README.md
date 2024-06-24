@@ -82,7 +82,7 @@ python encoding_score/pca_analysis.py --dataset majajhong
 
 To generate model ablation results:
 ```
-python encoding_score/pca_analysis.py --dataset majajhong
+python encoding_score/ablation_studies.py --dataset majajhong
 ```
 
 To generate image classification results using the places dataset:
