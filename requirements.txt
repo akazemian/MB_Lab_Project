@@ -1,11 +1,7 @@
 pillow
-boto3
 opencv-python
-dropbox
 loguru
 matplotlib
-nibabel
-nilearn
 numpy
 pandas
 scipy

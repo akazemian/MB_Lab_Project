@@ -1,11 +1,10 @@
 import os
-import sys
-import xarray as xr
-from sklearn.decomposition import PCA
 import functools
 import pickle
+import logging
+
 import torch
-import logging 
+from sklearn.decomposition import PCA
 
 from config import CACHE, setup_logging
 setup_logging()

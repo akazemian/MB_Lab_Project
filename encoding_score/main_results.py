@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', required=True, help="Specify the dataset name",
                         type=str, choices=['naturalscenes', 'majajhong'])
     parser.add_argument('--device', required=False, help="Specify device name",
-                        type=str, choices=['cpu', 'cuda'])
+                        type=str, default="cuda", choices=["cpu", "cuda"])
     args = parser.parse_args()
 
     main(args.dataset, args.device)

@@ -1,8 +1,9 @@
 import os
-import numpy as np 
 import gc
 import argparse
 import logging
+
+import numpy as np 
 
 from model_activations.models.utils import load_model, load_full_identifier
 from model_activations.models.configs import analysis_cfg as cfg
@@ -11,8 +12,8 @@ from encoding_score.regression.get_betas import NeuralRegression
 from encoding_score.regression.scores_tools import get_bootstrap_rvalues
 from config import CACHE, setup_logging
 from eigen_analysis.compute_pcs import compute_model_pcs
-setup_logging()
 
+setup_logging()
 MODEL_NAME = 'expansion'
 
 def main(dataset, device):

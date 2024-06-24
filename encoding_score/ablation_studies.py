@@ -25,8 +25,10 @@ def main(dataset_name, device):
     local_connectivity_(dataset_name, device)       
 
     logging.info(f'\033[1m Running script for random models\033[0m')
-    random_models_(dataset_name, device)        
+    random_models_(dataset_name, device) 
 
+    logging.info(f'\033[1m Running script for non linearities\033[0m')
+    non_linearity_(dataset_name, device)  
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run scripts with dataset selection.")

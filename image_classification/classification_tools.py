@@ -1,26 +1,19 @@
-#libraries
-from sklearn import svm
-from sklearn.linear_model import LogisticRegression 
+import pickle
+import functools
+import os
+
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.neighbors import NearestCentroid
 from sklearn.utils.validation import check_array, check_is_fitted
 from sklearn.metrics.pairwise import pairwise_distances
 from sklearn.model_selection import StratifiedKFold
-from sklearn import svm
-from itertools import combinations
-from tqdm import tqdm
-import random
 import numpy as np
 from scipy.special import softmax
-import torch
-import pickle
-import functools
 
-# local vars
 from tools.loading import load_places_cat_labels
 from config import CACHE
-
 
 class NearestCentroidDistances(NearestCentroid):
     def predict_distances(self, X):
@@ -28,8 +21,6 @@ class NearestCentroidDistances(NearestCentroid):
         X = check_array(X, accept_sparse='csr')
         distances = pairwise_distances(X, self.centroids_, metric=self.metric)
         return distances
-    
-
     
 def prototype_performance(X_train, y_train, X_test, y_test):
         model = NearestCentroidDistances()
@@ -39,8 +30,6 @@ def prototype_performance(X_train, y_train, X_test, y_test):
         y_pred = np.argmax(y_pred, axis=1)
 
         return accuracy_score(y_test, y_pred)
-
-
     
 def get_Xy(data):
     
@@ -55,13 +44,12 @@ def get_Xy(data):
     
     return data, labels
 
-
-
 def logistic_regression(X_train, y_train, X_test, y_test):
     
+    print(X_train.shape)
+    print(y_train.shape)
     clf = LogisticRegression(random_state=0).fit(X_train, y_train)
     return clf.score(X_test, y_test)
-
 
 def cv_performance(X, y, cat_labels, clf = 'logistic', num_folds=5):
     

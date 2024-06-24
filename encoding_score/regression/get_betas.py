@@ -2,6 +2,7 @@ import os
 import logging
 
 from config import CACHE, setup_logging
+
 setup_logging()
 
 class NeuralRegression():

@@ -1,15 +1,8 @@
-from scipy import sparse
 import torch
 import numpy as np
 import cupy as cp
-from sklearn.linear_model._ridge import  MultiOutputMixin, RegressorMixin
-from sklearn.linear_model._ridge import _RidgeGCV, _BaseRidgeCV
-from sklearn.linear_model._ridge import is_classifier, _check_gcv_mode
-from sklearn.linear_model._ridge import _IdentityRegressor, safe_sparse_dot
-from sklearn.linear_model._base import _preprocess_data
 from torchmetrics.functional import spearman_corrcoef, pearson_corrcoef
 from torchmetrics.functional import concordance_corrcoef, explained_variance
-from sklearn.metrics import explained_variance_score
 from scipy.stats import pearsonr
 
 def unify_dtypes(*args, target_dtype=None, precision='lowest'):

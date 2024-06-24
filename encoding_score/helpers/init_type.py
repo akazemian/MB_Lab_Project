@@ -1,7 +1,7 @@
-import numpy as np 
 import gc
-import argparse
 import logging
+
+import numpy as np
 
 from model_activations.models.utils import load_full_identifier
 from model_activations.models.configs import analysis_cfg as cfg
@@ -10,8 +10,8 @@ from model_activations.activation_extractor import Activations
 from encoding_score.regression.get_betas import NeuralRegression
 from encoding_score.regression.scores_tools import get_bootstrap_rvalues
 from config import setup_logging
-setup_logging()
 
+setup_logging()
 MODEL_NAME = 'expansion'
 ANALYSIS = 'init_types'
 N_BOOTSTRAPS = 1000

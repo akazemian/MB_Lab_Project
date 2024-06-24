@@ -1,29 +1,24 @@
-import sys
+import os
+import random
+import pickle
+import warnings
+import gc
+
 import xarray as xr
 import numpy as np
 import torch
-import os
-import random 
-from tqdm import tqdm 
-import pickle 
-import warnings
-warnings.filterwarnings('ignore')
-import random    
-random.seed(0)
-import scipy.stats as st
-import gc
-from scipy.sparse import csr_matrix
-from pathlib import Path
+from tqdm import tqdm
 from sklearn.linear_model import Ridge
 
-from config import CACHE, DATA    
+from config import CACHE, DATA
 from ..regression.regression_tools import regression_shared_unshared
 from ..regression.torch_cv import TorchRidgeGCV
 
+warnings.filterwarnings('ignore')
+random.seed(0)
 NSD_NEURAL_DATA = os.path.join(DATA,'naturalscenes')
 SHARED_IDS = pickle.load(open(os.path.join(NSD_NEURAL_DATA, 'nsd_ids_shared'), 'rb'))
 SHARED_IDS = [image_id.strip('.png') for image_id in SHARED_IDS]
-
 ALPHA_RANGE = [10**i for i in range(10)]
       
 def normalize(X, X_min=None, X_max=None, use_min_max=False):
@@ -42,7 +37,7 @@ def nsd_scorer(activations_identifier: str,
                region: str,
               device: str):
     
-        activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',activations_identifier), engine='h5netcdf')  
+        activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',activations_identifier), engine='netcdf4')  
         for subject in tqdm(range(8)):
 
             ids_train, neural_data_train = load_nsd_data(mode ='unshared',
@@ -100,7 +95,7 @@ def get_best_model_layer(activations_identifier, region, device):
         for iden in activations_identifier:
             
             print('getting scores for:',iden)
-            activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',iden), engine='h5netcdf')  
+            activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',iden), engine='netcdf4')  
         
             scores = []
             alphas = [] 
@@ -129,7 +124,7 @@ def nsd_get_best_layer_scores(activations_identifier: list, region: str, device:
     
 
         best_layer, best_alphas = get_best_model_layer(activations_identifier, region, device)            
-        activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',best_layer), engine='h5netcdf')  
+        activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',best_layer), engine='netcdf4')  
         
         for subject in tqdm(range(8)):
 
@@ -206,7 +201,7 @@ def load_nsd_data(mode: str, subject: int, region: str, return_data=True) -> tor
         A Tensor of Neural data, or Tensor of Neural data and stimulus ids
         
         """
-        ds = xr.open_dataset(os.path.join(NSD_NEURAL_DATA,region,'preprocessed',f'subject={subject}.nc'),engine='h5netcdf')
+        ds = xr.open_dataset(os.path.join(NSD_NEURAL_DATA,region,'preprocessed',f'subject={subject}.nc'),engine='netcdf4')
         
         if mode == 'unshared':
                 mask = ~ds.presentation.stimulus.isin(SHARED_IDS)
@@ -274,9 +269,9 @@ def set_new_coord(ds):
 
 def filter_roi(subject,roi):
 
-    ds_source = xr.open_dataset(f'/data/rgautha1/cache/bonner-caching/neural-dimensionality/data/dataset=allen2021.natural_scenes/betas/resolution=1pt8mm/preprocessing=fithrf/z_score=True/roi={roi}/subject={subject}.nc',engine='h5netcdf')
+    ds_source = xr.open_dataset(f'/data/rgautha1/cache/bonner-caching/neural-dimensionality/data/dataset=allen2021.natural_scenes/betas/resolution=1pt8mm/preprocessing=fithrf/z_score=True/roi={roi}/subject={subject}.nc',engine='netcdf4')
 
-    ds_target = xr.open_dataset(os.path.join(NSD_NEURAL_DATA,f'roi=general/preprocessed/z_score=session.average_across_reps=True/subject={subject}.nc'), engine='h5netcdf')
+    ds_target = xr.open_dataset(os.path.join(NSD_NEURAL_DATA,f'roi=general/preprocessed/z_score=session.average_across_reps=True/subject={subject}.nc'), engine='netcdf4')
 
     ds_source = set_new_coord(ds_source)
     ds_target = set_new_coord(ds_target)

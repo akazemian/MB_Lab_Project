@@ -1,6 +1,10 @@
-# set paths
-DATA = '/home/atlask/data/atlas/repo_data' # path to datasets
-CACHE = '/home/atlask/data/atlas/.repo_cache' # path to everything that will be cached
+from pathlib import Path
+
+# path to the data folder containing all data files
+DATA = '/home/atlask/data/atlas/data/'
+
+# cache path
+CACHE = './.cache'
 
 # logging 
 import logging

@@ -1,7 +1,6 @@
 import os
-import pandas as pd
+import csv
 from config import DATA
-from .utils import download_data_from_dropbox
 
 def load_nsd_images():
     """
@@ -10,25 +9,19 @@ def load_nsd_images():
     Returns:
         list: A sorted list of full paths to the natural scene images.
     """
-    download_data_from_dropbox('naturalscenes')
     NSD_IMAGES = os.path.join(DATA,'naturalscenes','images')
     return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])
-    
-        
+
 def load_majaj_images():
-    
     """
     Loads the file paths of images from the MAJAJ_IMAGES directory.
 
     Returns:
         list: A sorted list of full paths to the images in the MAJAJ_IMAGES directory.
     """
-    download_data_from_dropbox('majajhong')
     MAJAJ_IMAGES = os.path.join(DATA,'majajhong','image_dicarlo_hvm-public')
     return sorted([f'{MAJAJ_IMAGES}/{image}' for image in os.listdir(MAJAJ_IMAGES)])
-    
-    
-    
+        
 def load_places_val_images():
     """
     Loads the file paths of validation images from the PLACES_IMAGES directory.
@@ -36,22 +29,20 @@ def load_places_val_images():
     Returns:
         list: A sorted list of full paths to the validation images.
     """
-    download_data_from_dropbox('places')
     PLACES_IMAGES = os.path.join(DATA,'places')
     images = os.listdir(os.path.join(PLACES_IMAGES,'val_images/val_256'))
     images_paths = [f'{PLACES_IMAGES}/val_images/val_256/{i}' for i in images]
     
     return sorted(images_paths)
-    
-    
+      
 def load_places_train_images():
-    download_data_from_dropbox('places')
     PLACES_IMAGES = os.path.join(DATA,'places')
     images_paths = []
     base_dir = os.path.join(PLACES_IMAGES,'train_images_subset')
     
     subdirs = [os.path.join(base_dir, d) for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))]
 
+    print(len(subdirs))
     for subdir in subdirs:
         # List all files in the subdirectory, including their full paths
         images_paths.extend([os.path.join(subdir, f) for f in os.listdir(subdir) if os.path.isfile(os.path.join(subdir, f))])
@@ -108,7 +99,11 @@ def get_image_labels(dataset_name, image_paths):
         
         case 'majajhong' | 'majajhong_shuffled':
             MAJAJ_NAME_DICT = os.path.join(DATA,'majajhong','image_dicarlo_hvm-public.csv')
-            name_dict = pd.read_csv(MAJAJ_NAME_DICT).set_index('image_file_name')['image_id'].to_dict()
+            # name_dict = pd.read_csv(MAJAJ_NAME_DICT).set_index('image_file_name')['image_id'].to_dict()\
+            name_dict = {}
+            with open(MAJAJ_NAME_DICT, mode='r') as infile:
+                reader = csv.DictReader(infile)
+                name_dict = {rows['image_file_name']: rows['image_id'] for rows in reader}
             return [name_dict[os.path.basename(i)] for i in image_paths]
         
         case 'places_train':

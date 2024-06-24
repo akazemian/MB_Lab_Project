@@ -1,3 +1,7 @@
+import gc
+import os
+import logging
+
 import pandas as pd
 import torch
 import pickle
@@ -5,12 +9,10 @@ from tqdm import tqdm
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from scipy.stats import spearmanr
-import gc
-import os
-import logging
 
 from model_activations.models.utils import load_full_identifier, find_best_layer_iden
-from config import CACHE, DATA, setup_logging
+from config import CACHE, setup_logging
+
 setup_logging()
 
 PREDS_PATH = os.path.join(CACHE,'neural_preds')

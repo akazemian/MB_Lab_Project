@@ -1,11 +1,13 @@
 import os
 import pickle
 import functools
-import torch
 import gc
 import logging
 
+import torch
+
 from config import CACHE, setup_logging
+
 setup_logging()
 
 def register_pca_hook(x: torch.Tensor, pca_file_name: str, n_components, 
@@ -22,7 +24,7 @@ def register_pca_hook(x: torch.Tensor, pca_file_name: str, n_components,
     Returns:
         torch.Tensor: The transformed tensor after applying PCA.
     """
-    pca_path = os.path.join(CACHE, pca_file_name)
+    pca_path = os.path.join(CACHE, 'pca', pca_file_name)
 
     with open(pca_path, 'rb') as file:
         _pca = pickle.load(file)

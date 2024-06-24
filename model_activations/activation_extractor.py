@@ -1,19 +1,21 @@
 import os
 import warnings
 from collections import OrderedDict
+from typing import Optional
+import logging
+
 from tqdm import tqdm
 import torch
 from torch import nn
 from torch.autograd import Variable
 import xarray as xr
 import numpy as np
-from typing import Optional
-import logging
 
 from tools.loading import load_image_paths, get_image_labels
 from tools.processing import ImageProcessor
 from model_activations.utils import cache, register_pca_hook
-from config import CACHE, DATA, setup_logging
+from config import CACHE, setup_logging
+
 setup_logging()
 
 warnings.warn('my warning')
@@ -98,7 +100,7 @@ class PytorchWrapper:
         """
         def hook_function(_layer: nn.Module, _input: torch.Tensor, output: torch.Tensor, name: str = layer_name):    
             if pca_iden is not None:
-                target_dict[name] = register_pca_hook(x=output, pca_file_name=os.path.join(PATH_TO_PCA, pca_iden),
+                target_dict[name] = register_pca_hook(x=output, pca_file_name=pca_iden,
                                                       n_components=n_components, device=self._device)
             else:
                 target_dict[name] = output
@@ -156,15 +158,12 @@ class Activations:
         pbar = tqdm(total=len(images) // self.batch_size)
         i = 0
         while i < len(images):
-            batch_data_final = get_batch_activations(dataset=self.dataset,
-                                                     images=images[i:i + self.batch_size, :],
+            batch_data_final = get_batch_activations(images=images[i:i + self.batch_size, :],
                                                      labels=labels[i:i + self.batch_size],
                                                      model=pytorch_model,
                                                      layer_name=self.layer_name,
                                                      pca_iden=self.pca_iden,
                                                      n_components=self.n_components,
-                                                     batch_size=self.batch_size,
-                                                     device=self.device,
                                                     )
 
             ds_list.append(batch_data_final)
@@ -196,15 +195,12 @@ def load_image_data(dataset_name:str, device:str):
 
     return images, labels
 
-def get_batch_activations(dataset: str,
-                          images: torch.Tensor,
+def get_batch_activations(images: torch.Tensor,
                           labels: list[str],
                           model: PytorchWrapper,
                           layer_name: str,
                           pca_iden: Optional[str],
-                          n_components: Optional[int],
-                          device: str,
-                          batch_size: int) -> xr.Dataset:
+                          n_components: Optional[int]) -> xr.Dataset:
     """
     Processes batches of images or paths to extract neural network activations, applying hooks if specified.
 
@@ -227,7 +223,6 @@ def get_batch_activations(dataset: str,
                                              layer_name=layer_name,
                                              n_components=n_components,
                                              pca_iden=pca_iden)
-    activations_final = []
     activations_b = activations_dict[layer_name]
     activations_b = torch.Tensor(activations_b.reshape(activations_dict[layer_name].shape[0], -1))
     ds = xr.Dataset(

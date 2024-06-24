@@ -1,10 +1,6 @@
 import os
-import sys
 import xarray as xr
-import numpy as np
-
 from config import DATA
-from .nsd_tools import average_betas_across_reps, z_score_betas_within_sessions
 
 NSD_NEURAL_DATA = os.path.join(DATA,'naturalscenes')
 regions = ['early visual stream', 'midventral visual stream', 'ventral visual stream']

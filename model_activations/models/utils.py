@@ -1,7 +1,7 @@
 from typing import Optional, Union
 import os
 
-from config import CACHE, DATA, setup_logging
+from config import CACHE
 
 # Constants
 ALEXNET_CONV_LAYERS = {1: 64, 2: 192, 3: 384, 4: 256, 5: 256}

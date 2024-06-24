@@ -1,12 +1,7 @@
 import numpy as np
-import xarray as xr
 import matplotlib.pyplot as plt
-import numpy as np
 from sklearn.linear_model import LinearRegression
-import pickle
 import seaborn as sns
-
-
 
 def powerlaw_exponent(eigspec: np.ndarray) -> float:
     start, end = 0, np.log10(len(eigspec))
@@ -23,10 +18,7 @@ def powerlaw_exponent(eigspec: np.ndarray) -> float:
     alpha = -linear_fit.coef_.item()
     return alpha, linear_fit.intercept_
 
-
-
 def plot_eigspec(data, label, color):
-      
     a, y = powerlaw_exponent(data)
     sns.lineplot(x=np.arange(1,len(data)+1),y=data/(10**y),label=label,c=color) #, alpha = {round(a,2)}
     #plt.bar(np.arange(1,len(data)+1),data,label=f'alpha = {round(a,2)}')
@@ -41,7 +33,6 @@ def plot_ref(data):
     plt.xscale('log')
     plt.yscale('log')  
     plt.legend()
-
 
 def rescale_pca_variance(principal_components):
     """

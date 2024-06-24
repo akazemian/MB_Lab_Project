@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-import pickle
 import timm
 from typing import Any
 

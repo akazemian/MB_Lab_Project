@@ -3,17 +3,15 @@
 The following is a modification of sklearn's ridge_gcv and is taken from Collin Conwell's DeepJuice repository (https://github.com/ColinConwell/DeepDive.git)"
 """
 
-
 from scipy import sparse
 import numpy as np
-from sklearn.linear_model._ridge import  MultiOutputMixin, RegressorMixin
+from scipy.stats import pearsonr
+from sklearn.linear_model._ridge import MultiOutputMixin, RegressorMixin
 from sklearn.linear_model._ridge import _RidgeGCV, _BaseRidgeCV
 from sklearn.linear_model._ridge import is_classifier, _check_gcv_mode
 from sklearn.linear_model._ridge import _IdentityRegressor, safe_sparse_dot
 from sklearn.linear_model._base import _preprocess_data
-
 from sklearn.metrics import explained_variance_score
-from scipy.stats import pearsonr
 
 pearsonr_vec = np.vectorize(pearsonr, signature='(n),(n)->(),()')
 

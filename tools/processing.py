@@ -1,20 +1,17 @@
-from torchvision import transforms
-import torch
-from PIL import Image
-from tqdm import tqdm
 import os
-import sys
-import os 
-import sys
 import functools
-from torch.utils.data import DataLoader
-from torch.utils.data import Dataset
 import pickle
-import torch.nn.functional as F
-import torch.nn as nn
 import logging
 
-from config import CACHE, DATA, setup_logging
+import torch
+from torch.utils.data import DataLoader, Dataset
+import torch.nn as nn
+from torchvision import transforms
+from PIL import Image
+from tqdm import tqdm
+
+from config import CACHE, setup_logging
+
 setup_logging()
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
@@ -47,7 +44,12 @@ def cache(file_name_func):
     return decorator
 
 
-
+import os
+import torch
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from tqdm import tqdm
+import logging
 
 class ImageProcessor:
     """
@@ -59,29 +61,24 @@ class ImageProcessor:
         batch_size (int, optional): Number of samples per batch of computation. Defaults to 100.
     """
     
-    def __init__(self, device, batch_size = 100):
-                
+    def __init__(self, device, batch_size=100):
         self.device = device
         self.batch_size = batch_size
 
-        if not os.path.exists(os.path.join(CACHE,'preprocessed_images')):
-            os.mkdir(os.path.join(CACHE,'preprocessed_images'))
-        
-        
+        if not os.path.exists(os.path.join(CACHE, 'preprocessed_images')):
+            os.mkdir(os.path.join(CACHE, 'preprocessed_images'))
+
     @staticmethod
-    def cache_file(image_paths, dataset, image_size=224):
+    def cache_file(image_paths, dataset, image_size=int(224/2)):
         if 'naturalscenes' in dataset:
             num_images = 73000
-            
         else:
             num_images = len(image_paths)
-            
         name = f'{dataset}_size={image_size}_num_images={num_images}'
-        return os.path.join('preprocessed_images',name)
+        return os.path.join('preprocessed_images', name)
 
-    
     @cache(cache_file)
-    def process(self, image_paths, dataset, image_size=224):        
+    def process(self, image_paths, dataset, image_size=int(224/2)):
         """
         Process and transform a list of images.
 
@@ -92,49 +89,120 @@ class ImageProcessor:
         Returns:
             torch.Tensor: Tensor containing the processed images.
         """
-        logging.info('processing images...')
-        
+        logging.info('Processing images...')
+
         if 'shuffled' in dataset:
-            
             transform = transforms.Compose([
                 transforms.Resize((image_size, image_size)),
                 transforms.ToTensor(),
                 ShufflePixels(),
-                transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)])
-
-
+                transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
+            ])
         else:
-  
             transform = transforms.Compose([
                 transforms.Resize((image_size, image_size)),
                 transforms.ToTensor(),
-                transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)])
+                transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
+            ])
 
         dataset = TransformDataset(image_paths, transform=transform)
-        dataloader = DataLoader(dataset, batch_size=self.batch_size, shuffle=False, num_workers=2)
-        return torch.cat([batch for batch in tqdm(dataloader)],dim=0)
+        dataloader = DataLoader(dataset, batch_size=self.batch_size, shuffle=False, num_workers=1)
+
+        processed_images = []
+
+        for batch in tqdm(dataloader):
+            batch = batch.to(self.device)
+            processed_images.append(batch.cpu())
+
+        return torch.cat(processed_images, dim=0)
+
+
+# class ImageProcessor:
+#     """
+#     A utility class to preprocess and transform images. It includes caching functionalities to avoid
+#     repetitive computations.
+
+#     Attributes:
+#         device (torch.device): The device to which tensors should be sent.
+#         batch_size (int, optional): Number of samples per batch of computation. Defaults to 100.
+#     """
+    
+#     def __init__(self, device, batch_size = 100):
+                
+#         self.device = device
+#         self.batch_size = batch_size
+
+#         if not os.path.exists(os.path.join(CACHE,'preprocessed_images')):
+#             os.mkdir(os.path.join(CACHE,'preprocessed_images'))
+        
+        
+#     @staticmethod
+#     def cache_file(image_paths, dataset, image_size=224):
+#         if 'naturalscenes' in dataset:
+#             num_images = 73000
+            
+#         else:
+#             num_images = len(image_paths)
+            
+#         name = f'{dataset}_size={image_size}_num_images={num_images}'
+#         return os.path.join('preprocessed_images',name)
+
+    
+#     @cache(cache_file)
+#     def process(self, image_paths, dataset, image_size=224):        
+#         """
+#         Process and transform a list of images.
+
+#         Args:
+#             image_paths (list): List of image file paths.
+#             dataset (str): Dataset name.
+
+#         Returns:
+#             torch.Tensor: Tensor containing the processed images.
+#         """
+#         logging.info('processing images...')
+        
+#         if 'shuffled' in dataset:
+            
+#             transform = transforms.Compose([
+#                 transforms.Resize((image_size, image_size)),
+#                 transforms.ToTensor(),
+#                 ShufflePixels(),
+#                 transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)])
+
+
+#         else:
+  
+#             transform = transforms.Compose([
+#                 transforms.Resize((image_size, image_size)),
+#                 transforms.ToTensor(),
+#                 transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)])
+
+#         dataset = TransformDataset(image_paths, transform=transform)
+#         dataloader = DataLoader(dataset, batch_size=self.batch_size, shuffle=False, num_workers=2)
+#         return torch.cat([batch for batch in tqdm(dataloader)],dim=0)
     
 
-    def process_batch(self, image_paths, dataset):
-        """
-        Process a batch of images without using cache.
+#     def process_batch(self, image_paths, dataset):
+#         """
+#         Process a batch of images without using cache.
 
-        Args:
-            image_paths (list): List of image file paths.
-            dataset (str): Dataset name.
+#         Args:
+#             image_paths (list): List of image file paths.
+#             dataset (str): Dataset name.
 
-        Returns:
-            torch.Tensor: Tensor containing the processed images.
-        """
-        dataset = TransformDataset(image_paths, transform=self.transform)
-        dataloader = DataLoader(dataset, batch_size=self.batch_size, shuffle=False, num_workers=2)
-        return torch.cat([batch for batch in dataloader],dim=0)
+#         Returns:
+#             torch.Tensor: Tensor containing the processed images.
+#         """
+#         dataset = TransformDataset(image_paths, transform=self.transform)
+#         dataloader = DataLoader(dataset, batch_size=self.batch_size, shuffle=False, num_workers=2)
+#         return torch.cat([batch for batch in dataloader],dim=0)
 
 
 
 
 class TransformDataset(Dataset):
-    def __init__(self, image_paths, shuffle_pixels = True, transform=None):
+    def __init__(self, image_paths, transform=None):
         self.image_paths = image_paths
         self.transform = transform
 
@@ -150,10 +218,6 @@ class TransformDataset(Dataset):
             img = self.transform(img)
         
         return img
-
-
-
-
 
 
 class ShufflePixels(nn.Module):

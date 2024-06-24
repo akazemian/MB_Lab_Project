@@ -1,26 +1,23 @@
-import sys
-import xarray as xr
-import numpy as np
-import torch
 import os
-import random 
-from tqdm import tqdm 
-import pickle 
-import random    
+import random
+import pickle
 from pathlib import Path
+
+import xarray as xr
+import torch
+from tqdm import tqdm
 from sklearn.linear_model import Ridge
 
-from config import CACHE, DATA   
-from tools.utils import download_data_from_dropbox
+from config import CACHE, DATA
 from ..regression.regression_tools import regression_shared_unshared
 from ..regression.torch_cv import TorchRidgeGCV
+
 
 random.seed(0)
 
 DATASET = 'majajhong'
 SUBJECTS = ['Chabo','Tito']
 
-download_data_from_dropbox(DATASET)
 MAJAJ_DATA = os.path.join(DATA,'majajhong')
 TRAIN_IDS =  pickle.load(open(os.path.join(MAJAJ_DATA,'majaj_train_ids'), "rb"))
 TEST_IDS =  pickle.load(open(os.path.join(MAJAJ_DATA,'majaj_test_ids'), "rb"))
