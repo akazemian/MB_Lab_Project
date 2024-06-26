@@ -1,48 +1,40 @@
-# Overview
+Metadata-Version: 2.1
+Name: untrained_models_of_visual_cortex
+Version: 0.1.0
+Summary: modeling primate neural responses using high dimensional untrained CNNs
+Home-page: http://github.com/akazemian/untrained_models_of_visual_cortex
+Author: Atlas Kazemian
+Author-email: atlaskazemian@gmail.com
+Classifier: Programming Language :: Python :: 3.10.14
+Classifier: Operating System :: Linux
+Requires-Python: >=3.10.14
+Description-Content-Type: text/markdown
+Requires-Dist: pillow<=10.3.0
+Requires-Dist: opencv-python<=4.10.0.84
+Requires-Dist: loguru<=0.7.2
+Requires-Dist: matplotlib<=3.9.0
+Requires-Dist: numpy<=2.0.0
+Requires-Dist: pandas<=2.2.2
+Requires-Dist: scipy<=1.13.1
+Requires-Dist: seaborn<=0.13.2
+Requires-Dist: scikit-learn<=1.5.0
+Requires-Dist: timm<=1.0.7
+Requires-Dist: torch<=2.3.1
+Requires-Dist: torchmetrics<=1.4.0.post0
+Requires-Dist: torchvision<=0.18.1
+Requires-Dist: tqdm<=4.66.4
+Requires-Dist: xarray<=2024.6.0
+Requires-Dist: netCDF4<=1.7.1
+Requires-Dist: cupy-cuda12x<=13.2.0
+
+# High performing untrained models of primate visual cortex
+
 ![The expansion model architecture](model.png)
 
 The expansion model is a learning-free convolutional neural network based on compressession in the spatial domain and expansion in the feature domain. To use the model for your own data, please follow the steps incuded in section 1. To reproduce the results from our bioarxiv preprint, refer to section 2. 
 
 
-# System Requirements
-
-## Harware requirements
- The code requires only a standard computer with enough CPU and GPU compute power to support all operations.
-
-
-## Software requirements
-
-### OS requirements
-The code has been tested on Fedora Linux 100.fc39.x86_64 as well as Ubuntu XXXX. 
-
-### Python version
-The code has been tested on Python==3.10.14
-
-### Python dependencies
-The following is a list of python libraries with version numbers required to run all scripts:
-```
-pillow<=10.3.0
-opencv-python<=4.10.0.84
-loguru<=0.7.2
-matplotlib<=3.9.0
-numpy<=2.0.0
-pandas<=2.2.2
-scipy<=1.13.1
-seaborn<=0.13.2
-scikit-learn<=1.5.0
-timm<=1.0.7
-torch<=2.3.1
-torchmetrics<=1.4.0.post0
-torchvision<=0.18.1
-tqdm<=4.66.4
-xarray<=2024.6.0
-netCDF4<=1.7.1
-cupy-cuda12x<=13.2.0
-```
-
-# Installation Guide
-
-## Using only the Expansion model
+# 1. Using Expansion model
 
 - Please download (only) the folder ```/model_features/models```. This is easily done using https://download-directory.github.io/.
   
@@ -79,50 +71,31 @@ features = expansion_model(X)
 
 The ouput is a tensor of size NxP, where N = the number of image and P = the number of features in the last layer of the model.
 
-## Entire repository
 
-### Initial setup
+# 2. Reproducing manuscript results
 
-First, download the data used in all analysis [here](https://www.dropbox.com/scl/fo/ow0v17ldsax4iddtp82aj/AEwkme4Crdi0d80hv2zigC8?rlkey=sfzri315280ohr72mwyz9850j&st=4jxnohjt&dl=0). 
-
+## 1. Initial setup
 
 Clone this repository and navigate to the repository folder.
 ```
 git clone https://github.com/akazemian/untrained_models_of_visual_cortex.git
-cd untrained_models_of_visual_cortex
 ```
 
-In the root directory, open ```config.py``` and set the path where the data was downloaded (```DATA```). 
+Download the data used in all analysis [here](https://www.dropbox.com/scl/fo/ow0v17ldsax4iddtp82aj/AEwkme4Crdi0d80hv2zigC8?rlkey=sfzri315280ohr72mwyz9850j&st=4jxnohjt&dl=0). 
+
+
+In the root directory, open ```config.py``` and set the path for the data folder ```DATA```. 
+
+```
+DATA = '/data' 
+```
 
 Install required packages:
 ```
-pip install . 
+pip install -r requirements.txt 
 ```
 
-## Running the demo
-The demo generates all results for a truncated version of the majajhong dataset (50 out of 3200 images), and only considers the smallest version of each of the untrained models considered.
-
-To generate brain similarity score for the untrained models and alexnet: 
-```
-python demo/main_results.py --dataset majajhong
-```
-
-To generate the PCA results:
-```
-python demo/pca_analysis.py --dataset majajhong
-```
-
-To generate model ablation results:
-```
-python demo/ablation_studies.py --dataset majajhong
-```
-
-To generate image classification results using the places dataset:
-```
-python demo/classification.py 
-```
-
-### Replicating results
+## 2. Generating results files
 
 Navigate to the project directory and make sure to specify the dataset (```majajhong``` or ```naturalscenes```) when running the following.
 
@@ -146,33 +119,33 @@ To generate image classification results using the places dataset:
 python image_classification/run.py 
 ```
 
-### 3. Generating figures
+## 3. Generating figures
 
-Navigate to the ```notebooks``` folder. Here you will find notebooks for generating each figure individually. These are saved in the ```figures``` folder.
+Navigate to the ```figures``` folder. Here you will find notebooks for generating each figure individually. These are saved in ```figures/manuscript_figures```
 
-# Information about datasets:
+## 4. Information about datasets:
 
 When generating the results, the stimuli and preprocessed neural data are downloaded using the DATA path set earlier. This is done to increase efficiency. Alternatively, information about how to download and process the raw data manually is described below. The code used for preprocessing the neural data can be found in ```tools/neural_data_processing```
 
-## The Majajhong dataset 
+### The Majajhong dataset 
 
 **Data**: The monkey electrophysiology dataset (Majaj et al., 2015) is available as part of the [Brain-score GitHub package](https://github.com/brain-score):. 
 
 **Preprocessing**: We use the average response to stimuli across repetitions. 
 
-## The Naturalscenes dataset:
+### The Naturalscenes dataset:
 
 Data: The Natural Scenes Dataset human fMRI dataset (Allen et al., 2022) can be downloaded [here](https://naturalscenesdataset.org/). 
 
 Preprocessing: We use the NSD single-trial betas, preprocessed in 1.8-mm volume space and denoised using the GLMdenoise technique (version 3; “betas_fithrf_GLMdenoise_RR”) (Kay et al., 2013). We converted the betas to z-scores within each scanning session and computed the average betas for each NSD stimulus across repetitions. 
 
 
-## The Places dataset:
+### The Places dataset:
 
 Data: The Places dataset (Zhou et al, 2018) can be downloaded [here](http://places2.csail.mit.edu/)
 
 
-# References
+### References
 
 Allen, E. J., St-Yves, G., Wu, Y., Breedlove, J. L., Prince, J. S., Dowdle, L. T., Nau, M., Caron, B., Pestilli, F., Charest, I., Hutchinson, J. B., Naselaris, T., & Kay, K. (2022). A massive 7T fMRI dataset to bridge cognitive neuroscience and artificial intelligence. Nature Neuroscience, 25(1), 116–126. https://doi.org/10.1038/s41593-021-00962-x 
 

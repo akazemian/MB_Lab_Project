@@ -1,10 +1,8 @@
-from pathlib import Path
-
 # path to the data folder containing all data files
 DATA = '/home/atlask/data/atlas/data/'
 
 # cache path
-CACHE = './.cache'
+CACHE = '/home/atlask/data/atlas/.cache'
 
 # logging 
 import logging
