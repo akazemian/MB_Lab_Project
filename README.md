@@ -1,10 +1,21 @@
+- [Overview](#overview)
+- [System requirements](#system-requirements)
+  - [Hardware requirements](#hardware-requirements)
+  - [Software requirements](#software-requirements)
+- [Installation guide](#installation-guide)
+  - [Using the Expansion Model](#using-the-expansion-model)
+  - [Entire Repository](#entire-repository)
+- [Information about the datasets](#information-about-the-datasets)
+- [References](#references)
+
+
 # Overview
-![The expansion model architecture](model.png)
+![The expansion model architecture](docs/model.png)
 
 The expansion model is a learning-free convolutional neural network based on compressession in the spatial domain and expansion in the feature domain. To use the model for your own data, please follow the steps incuded in section 1. To reproduce the results from our bioarxiv preprint, refer to section 2. 
 
 
-# System Requirements
+# System requirements
 
 ## Harware requirements
  The code requires only a standard computer with enough CPU and GPU compute power to support all operations.
@@ -40,11 +51,11 @@ netCDF4<=1.7.1
 cupy-cuda12x<=13.2.0
 ```
 
-# Installation Guide
+# Installation guide
 
 ## Using only the Expansion model
 
-- Please download (only) the folder ```/model_features/models```. This is easily done using https://download-directory.github.io/.
+- Please download (only) the folder ```/code/model_activations/models```. This is easily done using https://download-directory.github.io/.
   
 
 - Navigate to the repo folder and install requirements:
@@ -100,24 +111,25 @@ pip install .
 ```
 
 ## Running the demo
-The demo generates all results for a truncated version of the majajhong dataset (50 out of 3200 images), and only considers the smallest version of each of the untrained models considered.
+There are 2 datasets used for the demo. For analyses involving neural data, a truncated version of the majajhong dataset (50 images) is used. For analyses relating to image classification, a truncated version of the Places train set (500 images) and validation set (500 images) is used. Further, the smallest version of each untrained model is considered for all parts of the demo. Each demo has a separate notebook in the folder ```demo_notebooks```, where the output can be visualized. Alternatively, they scripts for generating demo results can be run as shown below:
 
-To generate brain similarity score for the untrained models and alexnet: 
+To generate brain similarity score for the untrained models and alexnet (total time: 7-8 seconds): 
 ```
 python demo/main_results.py --dataset majajhong
 ```
+To follow this in a notebook:
 
-To generate the PCA results:
+To generate the PCA results (total time: 14-15 seconds):
 ```
 python demo/pca_analysis.py --dataset majajhong
 ```
 
-To generate model ablation results:
+To generate model ablation results (total time: 80 seconds):
 ```
 python demo/ablation_studies.py --dataset majajhong
 ```
 
-To generate image classification results using the places dataset:
+To generate image classification results using the places dataset (total time: 2-3 minutes):
 ```
 python demo/classification.py 
 ```
@@ -150,7 +162,7 @@ python image_classification/run.py
 
 Navigate to the ```notebooks``` folder. Here you will find notebooks for generating each figure individually. These are saved in the ```figures``` folder.
 
-# Information about datasets:
+# Information about the datasets:
 
 When generating the results, the stimuli and preprocessed neural data are downloaded using the DATA path set earlier. This is done to increase efficiency. Alternatively, information about how to download and process the raw data manually is described below. The code used for preprocessing the neural data can be found in ```tools/neural_data_processing```
 

@@ -19,7 +19,9 @@ MODEL_NAME = 'expansion'
 DATASET = 'majajhong_demo'
 
 def main(device, batch_size):
-       
+    '''
+    The output encoding score for each model is saved as a pandas dataframe in the results folder
+    '''   
     start_time = time.perf_counter()
     
     N_BOOTSTRAPS = 1000

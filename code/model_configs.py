@@ -30,7 +30,7 @@ analysis_cfg = {
             "pca": {"features": [3, 30, 300, 3000], "layers": 5},
             "non_linearities": {"features": [3000], "layers": 5, "variations": ["gelu", "elu", "abs", "leaky_relu"]},
             "init_types": {"features": [3, 30, 300, 3000], "layers": 5, 
-                           "variations": ["kaiming_uniform", "kaiming_normal", "xavier_uniform", "xavier_normal"]}#"orthogonal"
+                           "variations": ["kaiming_uniform", "kaiming_normal", "xavier_uniform", "xavier_normal", "orthogonal"]}
         },
         "regions": "ventral visual stream",
         "subjects": [i for i in range(8)],
@@ -52,7 +52,7 @@ analysis_cfg = {
             "pca": {"features": [3, 30, 300, 3000, 30000], "layers": 5},
             "non_linearities": {"features": [30000], "layers": 5, "variations": ["relu", "gelu", "elu", "abs", "leaky_relu"]},
             "init_types": {"features": [3, 30, 300, 3000, 30000], "layers": 5, 
-                           "variations": ["kaiming_uniform", "kaiming_normal", "xavier_uniform", "xavier_normal"]}#, "orthogonal"]}
+                           "variations": ["kaiming_uniform", "kaiming_normal", "xavier_uniform", "xavier_normal", "orthogonal"]}
         },
         "regions": "IT",
         "subjects": ["Tito", "Chabo"],

@@ -8,11 +8,12 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.neighbors import NearestCentroid
 from sklearn.utils.validation import check_array, check_is_fitted
 from sklearn.metrics.pairwise import pairwise_distances
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, KFold
+
 import numpy as np
 from scipy.special import softmax
 
-from tools.loading import load_places_cat_labels
+from code.tools.loading import load_places_cat_labels
 from config import CACHE
 
 class NearestCentroidDistances(NearestCentroid):
@@ -45,13 +46,48 @@ def get_Xy(data):
     return data, labels
 
 def logistic_regression(X_train, y_train, X_test, y_test):
-    
-    print(X_train.shape)
-    print(y_train.shape)
     clf = LogisticRegression(random_state=0).fit(X_train, y_train)
     return clf.score(X_test, y_test)
 
-def cv_performance(X, y, cat_labels, clf = 'logistic', num_folds=5):
+def cv_performance(X, y, class_balance:bool, clf:int='logistic', num_folds:int=5, cat_labels:dict=None):
+    
+    accuracy = []
+    
+    if class_balance: 
+        skf = StratifiedKFold(n_splits=num_folds, shuffle=True, random_state=42)
+        labels = np.array(list(cat_labels.keys()))
+        categories = np.array(list(cat_labels.values()))
+        
+        for train_index, test_index in skf.split(labels, categories):
+            
+            X_train, y_train = X[train_index,...], y[train_index,...]
+            X_test, y_test = X[test_index,...], y[test_index,...]
+
+            if clf == 'prototype':
+                accuracy_score = prototype_performance(X_train, y_train, X_test, y_test)
+                accuracy.append(accuracy_score)
+            elif clf == 'logistic':
+                accuracy_score = logistic_regression(X_train, y_train, X_test, y_test)
+                accuracy.append(accuracy_score)  
+    else:
+        kf = KFold(n_splits=num_folds, shuffle=True, random_state=42)  
+
+        for train_index, test_index in kf.split(X):  
+            
+            X_train, y_train = X[train_index,...], y[train_index,...]
+            X_test, y_test = X[test_index,...], y[test_index,...]
+
+            if clf == 'prototype':
+                accuracy_score = prototype_performance(X_train, y_train, X_test, y_test)
+                accuracy.append(accuracy_score)
+            elif clf == 'logistic':
+                accuracy_score = logistic_regression(X_train, y_train, X_test, y_test)
+                accuracy.append(accuracy_score)   
+    
+    return sum(accuracy)/len(accuracy) 
+
+
+def cv_performance_demo(X, y, cat_labels, clf = 'logistic', num_folds=5):
     
     skf = StratifiedKFold(n_splits=num_folds, shuffle=True, random_state=42)
     
@@ -74,7 +110,6 @@ def cv_performance(X, y, cat_labels, clf = 'logistic', num_folds=5):
             accuracy.append(accuracy_score)    
     
     return sum(accuracy)/len(accuracy) 
-
 
 
 def cache(file_name_func):

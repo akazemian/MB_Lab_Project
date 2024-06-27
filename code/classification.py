@@ -5,10 +5,10 @@ import argparse
 
 import xarray as xr
 
-from config import CACHE, setup_logging
+from config import CACHE, RESULTS_PATH, setup_logging
 from tools.loading import load_places_cat_labels
 from model_activations.models.utils import load_model, load_full_identifier
-from Code.model_configs import analysis_cfg as cfg
+from model_configs import analysis_cfg as cfg
 from model_activations.activation_extractor import Activations
 from image_classification.config_ import MODEL_NAMES, PCA_DATASET, DATASET, NUM_COMPONENTS
 from image_classification.classification_tools import get_Xy, cv_performance
@@ -19,8 +19,8 @@ setup_logging()
 if not os.path.exists(CACHE):
     os.makedirs(CACHE)
     
-if not os.path.exists(os.path.join(CACHE,'classification')):
-    os.mkdir(os.path.join(CACHE,'classification'))    
+if not os.path.exists(RESULTS_PATH):
+    os.mkdir(RESULTS_PATH)    
 
 def main(batch_size:int, device:str):    
     
@@ -46,8 +46,8 @@ def main(batch_size:int, device:str):
                                                 dataset=DATASET,
                                                 principal_components = NUM_COMPONENTS)
         
-        if not os.path.exists(os.path.join(CACHE,'classification',activations_identifier)):
-            logging.info(f"Model: {activations_identifier}")
+        if not os.path.exists(os.path.join(RESULTS_PATH,f'classification_{model_name}')):
+            logging.info(f"Getting classification results for: {activations_identifier}")
             
             # load model
             model = load_model(model_name=model_name, 
@@ -67,10 +67,12 @@ def main(batch_size:int, device:str):
                                    engine='netcdf4').set_xindex('stimulus_id')
             cat_labels = load_places_cat_labels()
             X, y = get_Xy(data)
-            score = cv_performance(X, y, cat_labels)
+            score = cv_performance(X=X, y=y, class_balance=True, cat_labels=cat_labels)
 
-            with open(os.path.join(CACHE,'classification',activations_identifier),'wb') as f:
+            with open(os.path.join(RESULTS_PATH,f'classification_{model_name}'),'wb') as f:
                 pickle.dump(score,f)
+        else:
+            print(f'results for model: {activations_identifier} are already saved in cache')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

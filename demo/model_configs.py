@@ -7,7 +7,7 @@ model_cfg = {
         },
         "regions": ["IT"],
         "subjects": ["Tito", "Chabo"],
-        "test_data_size": 640
+        "test_data_size": 10
     }
 }
 
@@ -20,7 +20,7 @@ analysis_cfg = {
             "pca": {"features": [3], "layers": 5},
             "non_linearities": {"features": [3], "layers": 5, "variations": ["relu", "gelu", "elu", "abs", "leaky_relu"]},
             "init_types": {"features": [3], "layers": 5, 
-                           "variations": ["kaiming_uniform", "kaiming_normal", "xavier_uniform", "xavier_normal"]}#, "orthogonal"]}
+                           "variations": ["kaiming_uniform", "kaiming_normal", "xavier_uniform", "xavier_normal", "orthogonal"]}
         },
         "regions": "IT",
         "subjects": ["Tito", "Chabo"],
@@ -34,13 +34,13 @@ analysis_cfg = {
         "subjects": ["Tito", "Chabo"],
         "test_data_size": 10
     },
-    "places_val": {
+    "places_val_demo": {
         "models": {
             "alexnet": {"features": None, "layers": 5},
             "expansion": {"features": 3, "layers": 5},
         },
     },
-    "places_train": {
+    "places_train_demo": {
         "models": {
             "alexnet": {"features": None, "layers": 5},
             "expansion": {"features": 3, "layers": 5},

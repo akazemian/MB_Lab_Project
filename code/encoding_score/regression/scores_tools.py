@@ -11,15 +11,15 @@ from scipy.spatial.distance import pdist, squareform
 from scipy.stats import spearmanr
 
 from code.model_activations.models.utils import load_full_identifier, find_best_layer_iden
-from config import CACHE, setup_logging
+from config import CACHE, setup_logging, RESULTS_PATH
 
 setup_logging()
 
 PREDS_PATH = os.path.join(CACHE,'neural_preds')
-BOOTSTRAP_RESULTS_PATH = os.path.join(os.getcwd(),'results')
 
-if not os.path.exists(BOOTSTRAP_RESULTS_PATH):
-    os.mkdir(BOOTSTRAP_RESULTS_PATH)
+
+if not os.path.exists(RESULTS_PATH):
+    os.mkdir(RESULTS_PATH)
 
 def compute_similarity_matrix(features):
     """
@@ -97,9 +97,9 @@ def get_bootstrap_rvalues(model_name, features, layers, subjects, dataset, regio
     
 
     if file_name == None:
-        file_path = os.path.join(BOOTSTRAP_RESULTS_PATH, model_name + '_' + region + '.pkl')
+        file_path = os.path.join(RESULTS_PATH, model_name + '_' + dataset + '_' + region + '.pkl')
     else:
-        file_path = os.path.join(BOOTSTRAP_RESULTS_PATH, file_name + '_' + region + '.pkl')
+        file_path = os.path.join(RESULTS_PATH, file_name + '_' + dataset + '_' + region + '.pkl')
         
     if not os.path.exists(file_path):
         logging.info('Computing bootstrap distribution of r-values...')

@@ -27,7 +27,7 @@ def load_majaj_images(demo=False):
     return sorted([f'{MAJAJ_IMAGES}/{image}' for image in os.listdir(MAJAJ_IMAGES)])
 
 
-def load_places_val_images():
+def load_places_val_images(demo=False):
     """
     Loads the file paths of validation images from the PLACES_IMAGES directory.
 
@@ -38,9 +38,13 @@ def load_places_val_images():
     images = os.listdir(os.path.join(PLACES_IMAGES,'val_images/val_256'))
     images_paths = [f'{PLACES_IMAGES}/val_images/val_256/{i}' for i in images]
 
+    if demo:
+        return sorted(images_paths)[:500]
+    
     return sorted(images_paths)
       
-def load_places_train_images():
+
+def load_places_train_images(demo=False):
     PLACES_IMAGES = os.path.join(DATA,'places')
     images_paths = []
     base_dir = os.path.join(PLACES_IMAGES,'train_images_subset')
@@ -52,6 +56,9 @@ def load_places_train_images():
         # List all files in the subdirectory, including their full paths
         images_paths.extend([os.path.join(subdir, f) for f in os.listdir(subdir) if os.path.isfile(os.path.join(subdir, f))])
 
+    if demo:
+        return sorted(images_paths)[:500]
+    
     return sorted(images_paths)
 
 
@@ -84,6 +91,12 @@ def load_image_paths(dataset_name):
         case 'places_train':
             return load_places_train_images()
 
+        case 'places_val_demo':
+            return load_places_val_images(demo=True)
+    
+        case 'places_train_demo':
+            return load_places_train_images(demo=True)
+        
 
 def get_image_labels(dataset_name, image_paths):
     
@@ -112,10 +125,10 @@ def get_image_labels(dataset_name, image_paths):
                 name_dict = {rows['image_file_name']: rows['image_id'] for rows in reader}
             return [name_dict[os.path.basename(i)] for i in image_paths]
         
-        case 'places_train':
+        case 'places_train' | 'places_train_demo' :
             return [multi_level_basename(i) for i in image_paths]
                                                   
-        case 'places_val':
+        case 'places_val' | 'places_val_demo':
             return [os.path.basename(i).strip('.jpg') for i in image_paths]
 
 
@@ -137,19 +150,6 @@ def load_places_cat_labels():
         cat_dict[image] = int(cat)
     return cat_dict   
 
-    
-def load_places_cat_ids():
-    """
-    Load category names for the places dataset.
-
-    Returns:
-        list: List of category names for the validation images in the PLACES_IMAGES dataset.
-    """    
-    val_image_paths = load_places_val_images()
-    val_image_names = [os.path.basename(i) for i in val_image_paths]
-    cat_dict = load_places_cat_labels()
-
-    return [cat_dict[i] for i in val_image_names]              
             
 
 def multi_level_basename(full_path, levels=2):
@@ -160,5 +160,22 @@ def multi_level_basename(full_path, levels=2):
     else:
         result = os.path.join(*path_parts)
     return result
+
+
+# def load_places_cat_ids(demo=False):
+#     """
+#     Load category names for the places dataset.
+
+#     Returns:
+#         list: List of category names for the validation images in the PLACES_IMAGES dataset.
+#     """    
+#     if demo:
+#         val_image_paths = load_places_val_images(demp=True)
+#     else:
+#         val_image_paths = load_places_val_images()
+#     val_image_names = [os.path.basename(i) for i in val_image_paths]
+#     cat_dict = load_places_cat_labels()
+
+#     return [cat_dict[i] for i in val_image_names]              
 
 
