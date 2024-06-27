@@ -13,11 +13,12 @@ DATA = '/home/atlask/data/atlas/data/'
 # cache path
 CACHE = '/home/atlask/data/atlas/.cache'
 
-# encoding scores results
 current_dir = os.getcwd()
-if os.path.basename(current_dir) == 'demo':
-    os.chdir(os.path.dirname(current_dir))
-    current_dir = os.getcwd()
+if os.path.basename(current_dir) == 'demo_notebooks':
+    parent_dir = os.path.dirname(current_dir)  
+    grandparent_dir = os.path.dirname(parent_dir)  
+    os.chdir(grandparent_dir)  
+    current_dir = os.getcwd() 
 RESULTS_PATH = os.path.join(current_dir, 'results')
 
 
