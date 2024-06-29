@@ -6,6 +6,7 @@
   - [Using the Expansion Model](#using-the-expansion-model)
   - [Entire Repository](#entire-repository)
 - [Information about the datasets](#information-about-the-datasets)
+- [License](#license)
 - [References](#references)
 
 
@@ -183,6 +184,9 @@ Preprocessing: We use the NSD single-trial betas, preprocessed in 1.8-mm volume 
 
 Data: The Places dataset (Zhou et al, 2018) can be downloaded [here](http://places2.csail.mit.edu/)
 
+# License
+
+This project is covered under the MIT License.
 
 # References
 
