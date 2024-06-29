@@ -42,8 +42,6 @@ class NeuralRegression():
         
         """
 
-        logging.info('Predicting neural data from model activations...')        
-
         match self.dataset:
             
             case 'naturalscenes' | 'naturalscenes_shuffled':

@@ -25,11 +25,11 @@ def init_type_(dataset, cfg, batch_size, device):
         for features in cfg[dataset]['analysis'][ANALYSIS]['features']:
                     
             # get model identifier
+            logging.info(f" Features: {features}, Initialization type: {init_type}")
             activations_identifier = load_full_identifier(model_name=MODEL_NAME, features=features, 
                                                           layers=cfg[dataset]['analysis'][ANALYSIS]['layers'], 
                                                           dataset=dataset,
                                                           init_type = init_type)
-            logging.info(f"Model: {activations_identifier}, Region: {cfg[dataset]['regions']}")
                 
             model = Expansion5L(filters_5 = features, 
                                 init_type=init_type,
@@ -43,6 +43,7 @@ def init_type_(dataset, cfg, batch_size, device):
                         batch_size=batch_size).get_array(activations_identifier) 
     
     
+            logging.info(f"Predicting neural data from model activations")
             # predict neural data in a cross validated manner
             NeuralRegression(activations_identifier=activations_identifier,
                        dataset=dataset,
@@ -51,6 +52,7 @@ def init_type_(dataset, cfg, batch_size, device):
 
             gc.collect()
 
+    logging.info(f"Getting a bootstrap distribution of scores")
     # get a bootstrap distribution of r-values between predicted and actual neural responses
     get_bootstrap_rvalues(model_name = MODEL_NAME,
             features=cfg[dataset]['analysis'][ANALYSIS]['features'],

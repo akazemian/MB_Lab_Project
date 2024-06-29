@@ -11,8 +11,8 @@ from torch.autograd import Variable
 import xarray as xr
 import numpy as np
 
-from ..tools.loading import load_image_paths, get_image_labels
-from ..tools.processing import ImageProcessor
+from code.tools.loading import load_image_paths, get_image_labels
+from code.tools.processing import ImageProcessor
 from .utils import cache, register_pca_hook
 from config import CACHE, setup_logging
 
@@ -153,7 +153,7 @@ class Activations:
         images, labels = load_image_data(dataset_name=self.dataset, device=self.device)
         
         
-        logging.info('Extracting activations...')
+        logging.info('Batched activations...')
         ds_list = []
         pbar = tqdm(total=len(images) // self.batch_size)
         i = 0

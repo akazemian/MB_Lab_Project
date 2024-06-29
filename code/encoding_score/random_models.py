@@ -21,11 +21,12 @@ def random_models_(dataset, cfg, batch_size, device):
     
     for features in cfg[dataset]['analysis'][ANALYSIS]['features']:
         
+        logging.info(f"Model: {MODEL_NAME}, Features: {features}, Region: {cfg[dataset]['regions']}")
+                
         # get model identifier
         activations_identifier = load_full_identifier(model_name=MODEL_NAME, features=features, 
                                                       layers=cfg[dataset]['analysis'][ANALYSIS]['layers'], 
                                                       dataset=dataset)
-        logging.info(f'Model: {activations_identifier}')
         
         # load model
         model = load_model(model_name=MODEL_NAME, 
@@ -39,12 +40,14 @@ def random_models_(dataset, cfg, batch_size, device):
                     device=device,
                     batch_size=batch_size).get_array(activations_identifier) 
 
+        logging.info(f"Predicting neural data from model activations")
         # predict neural data in a cross validated manner
         NeuralRegression(activations_identifier=activations_identifier,
                    dataset=dataset,
                    region=cfg[dataset]['regions'],
                    device= device).predict_data()
 
+    logging.info(f"Getting a bootstrap distribution of scores")
     # get a bootstrap distribution of r-values between predicted and actual neural responses
     get_bootstrap_rvalues(model_name = MODEL_NAME,
             features=cfg[dataset]['analysis'][ANALYSIS]['features'],

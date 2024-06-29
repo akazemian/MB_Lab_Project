@@ -24,6 +24,8 @@ def main(dataset, device, batch_size):
 
     for features in cfg[dataset]['analysis']['pca']['features']:
 
+        logging.info(f"Model: {MODEL_NAME}, Features: {features}, Region: {cfg[dataset]['regions']}")
+        
         TOTAL_COMPONENTS = 100 if features == 3 else 1000 # model with 10^2 features has 100 components, the rest 1000
         N_COMPONENTS = list(np.logspace(0, np.log10(TOTAL_COMPONENTS), num=int(np.log10(TOTAL_COMPONENTS)) + 1, base=10).astype(int))
         
@@ -35,6 +37,8 @@ def main(dataset, device, batch_size):
     
         # compute model PCs using the train set
         if not os.path.exists(os.path.join(CACHE,'pca',pca_identifier)):
+            logging.info(f"Computing PCs for model")
+            
             compute_model_pcs(model_name = MODEL_NAME, 
                               features = features, 
                               layers = cfg[dataset]['analysis']['pca']['layers'], 
@@ -52,7 +56,9 @@ def main(dataset, device, batch_size):
                                                     dataset=dataset,
                                                     principal_components = n_components)            
             
-            logging.info(f"Model: {activations_identifier}, Components = {n_components}, Region: {cfg[dataset]['regions']}")
+            
+            logging.info(f"Extracting activations and projecting onto the first {n_components} PCs ")
+            
             #load model
             model = load_model(model_name=MODEL_NAME, 
                                features=features, 
@@ -68,6 +74,7 @@ def main(dataset, device, batch_size):
                         device= device).get_array(activations_identifier)  
 
 
+            logging.info(f"Predicting neural data using the first {n_components} PCs ")
             # predict neural data in a cross validated manner using model PCs
             NeuralRegression(activations_identifier=activations_identifier,
                              dataset=dataset,

@@ -18,16 +18,13 @@ warnings.filterwarnings('ignore')
 random.seed(0)
 PREDS_PATH = os.path.join(CACHE,'neural_preds')
 NSD_NEURAL_DATA = os.path.join(DATA,'naturalscenes')
-SHARED_IDS = pickle.load(open(os.path.join(NSD_NEURAL_DATA, 'nsd_ids_shared'), 'rb'))
-SHARED_IDS = [image_id.strip('.png') for image_id in SHARED_IDS]
+
 ALPHA_RANGE = [10**i for i in range(10)]
-      
+
 def normalize(X, X_min=None, X_max=None, use_min_max=False):
-    
     if use_min_max:
         X_normalized = (X - X_min) / (X_max - X_min)
         return X_normalized
-    
     else:
         X_min, X_max = X.min(axis=0), X.max(axis=0)
         X_normalized = (X - X_min) / (X_max - X_min)
@@ -39,51 +36,52 @@ def nsd_scorer(activations_identifier: str,
               device: str):
     
         activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',activations_identifier), engine='netcdf4')  
+        
         for subject in tqdm(range(8)):
 
-            ids_train, neural_data_train = load_nsd_data(mode ='unshared',
+            file_path = os.path.join(PREDS_PATH,f'{activations_identifier}_{region}_{subject}.pkl')
+            if not os.path.exists(file_path):
+            
+                ids_train, neural_data_train = load_nsd_data(mode ='unshared',
                                                     subject = subject,
                                                     region = region)
-        
-            X_train = filter_activations(data = activations_data, ids = ids_train)  
+                X_train = filter_activations(data = activations_data, ids = ids_train)  
+                X_train, X_min, X_max = normalize(X_train) # normalize
+                X_train = np.nan_to_num(X_train) # omit nans
+                y_train = neural_data_train['beta'].values
             
-            X_train, X_min, X_max = normalize(X_train) # normalize
-            X_train = np.nan_to_num(X_train) # omit nans
-            
-            y_train = neural_data_train['beta'].values
-            print('neural data shape:',y_train.shape)
-            
-            
-            regression = TorchRidgeGCV(
-                alphas=ALPHA_RANGE,
-                fit_intercept=True,
-                scale_X=False,
-                scoring='pearsonr',
-                store_cv_values=False,
-                alpha_per_target=False,
-                device=device)
-            
-            regression.fit(X_train, y_train)
-            best_alpha = float(regression.alpha_)
-            print('best alpha:',best_alpha)
+                regression = TorchRidgeGCV(
+                    alphas=ALPHA_RANGE,
+                    fit_intercept=True,
+                    scale_X=False,
+                    scoring='pearsonr',
+                    store_cv_values=False,
+                    alpha_per_target=False,
+                    device=device)
+                
+                regression.fit(X_train, y_train)
+                best_alpha = float(regression.alpha_)
             
             
-            ids_test, neural_data_test = load_nsd_data(mode ='shared',
-                                                       subject = subject,
-                                                       region = region)           
-            X_test = filter_activations(data = activations_data, ids = ids_test)                
-            
-            X_test = normalize(X_test, X_min, X_max, use_min_max=True) # normalize
-            X_test = np.nan_to_num(X_test) # omit nans
-            
-            y_test = neural_data_test['beta'].values                   
-            
-            y_true, y_predicted = regression_shared_unshared(x_train=X_train,
-                                                             x_test=X_test,
-                                                             y_train=y_train,
-                                                             y_test=y_test,
-                                                             model= Ridge(alpha=best_alpha))
-        return y_predicted           
+                ids_test, neural_data_test = load_nsd_data(mode ='shared',
+                                                        subject = subject,
+                                                        region = region)           
+                X_test = filter_activations(data = activations_data, ids = ids_test)                
+                X_test = normalize(X_test, X_min, X_max, use_min_max=True) # normalize
+                X_test = np.nan_to_num(X_test) # omit nans
+                y_test = neural_data_test['beta'].values                   
+                
+                y_true, y_predicted = regression_shared_unshared(x_train=X_train,
+                                                                x_test=X_test,
+                                                                y_train=y_train,
+                                                                y_test=y_test,
+                                                                model= Ridge(alpha=best_alpha))
+                with open(file_path,'wb') as f:
+                    pickle.dump(y_predicted, f,  protocol=4)
+                del y_true, y_predicted
+            else:
+                pass
+        return         
             
 
 def get_best_model_layer(activations_identifier, region, device):
@@ -119,34 +117,38 @@ def get_best_model_layer(activations_identifier, region, device):
             
 
 def nsd_get_best_layer_scores(activations_identifier: list, region: str, device:str):
-    
 
         best_layer, best_alphas = get_best_model_layer(activations_identifier, region, device)            
         activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',best_layer), engine='netcdf4')  
         
         for subject in tqdm(range(8)):
 
-            #file_path = Path(PREDS_PATH) / f'alexnet_gpool=False_dataset=naturalscenes_{region}_{subject}.pkl'
-            ids_train, neural_data_train = load_nsd_data(mode ='unshared',
+            file_path = os.path.join(PREDS_PATH,f'{best_layer}_{region}_{subject}.pkl')
+            if not os.path.exists(file_path):
+                ids_train, neural_data_train = load_nsd_data(mode ='unshared',
                                                     subject = subject,
                                                     region = region)
-            X_train = filter_activations(data = activations_data, ids = ids_train)       
-            y_train = neural_data_train['beta'].values
+                X_train = filter_activations(data = activations_data, ids = ids_train)       
+                y_train = neural_data_train['beta'].values
 
+                ids_test, neural_data_test = load_nsd_data(mode ='shared',
+                                                        subject = subject,
+                                                        region = region)           
 
-            ids_test, neural_data_test = load_nsd_data(mode ='shared',
-                                                       subject = subject,
-                                                       region = region)           
-
-            X_test = filter_activations(data = activations_data, ids = ids_test)               
-            y_test = neural_data_test['beta'].values                    
-            
-            y_true, y_predicted = regression_shared_unshared(x_train=X_train,
-                                                             x_test=X_test,
-                                                             y_train=y_train,
-                                                             y_test=y_test,
-                                                             model= Ridge(alpha=best_alphas[subject]))
-        return y_predicted      
+                X_test = filter_activations(data = activations_data, ids = ids_test)               
+                y_test = neural_data_test['beta'].values                    
+                
+                _, y_predicted = regression_shared_unshared(x_train=X_train,
+                                                                x_test=X_test,
+                                                                y_train=y_train,
+                                                                y_test=y_test,
+                                                                model= Ridge(alpha=best_alphas[subject]))
+                with open(file_path,'wb') as f:
+                    pickle.dump(y_predicted, f,  protocol=4)
+                del _, y_predicted
+            else:
+                pass
+        return
         
     
     
@@ -175,31 +177,14 @@ def fit_model_for_subject_roi(subject:int, region:str, activations_data:xr.DataA
             
 def load_nsd_data(mode: str, subject: int, region: str, return_data=True) -> torch.Tensor:
         
-        """
-        
-        Loads the neural data from disk for a particular subject and region.
+        SHARED_IDS = pickle.load(open(os.path.join(NSD_NEURAL_DATA, 'nsd_ids_shared'), 'rb'))
+        SHARED_IDS = [image_id.strip('.png') for image_id in SHARED_IDS]
+        IDS_TRUNCATED = pickle.load(open(os.path.join(NSD_NEURAL_DATA, 'ids_truncated'), 'rb'))
+        SHARED_IDS = list(set(SHARED_IDS) & set(IDS_TRUNCATED))
 
-        Parameters
-        ----------
-        mode:
-            The type of neural data to load ('shared' or 'unshared')
-            
-        subject:
-            The subject number 
-        
-        region:
-            The region name
-            
-        return_ids: 
-            Whether the image ids are returned 
-        
-
-        Returns
-        -------
-        A Tensor of Neural data, or Tensor of Neural data and stimulus ids
-        
-        """
         ds = xr.open_dataset(os.path.join(NSD_NEURAL_DATA,region,'preprocessed',f'subject={subject}.nc'),engine='netcdf4')
+        mask = ds.presentation.stimulus.isin(IDS_TRUNCATED)
+        ds = ds.sel(presentation=ds['presentation'][mask])
         
         if mode == 'unshared':
                 mask = ~ds.presentation.stimulus.isin(SHARED_IDS)
@@ -209,75 +194,21 @@ def load_nsd_data(mode: str, subject: int, region: str, return_data=True) -> tor
                 mask = ds.presentation.stimulus.isin(SHARED_IDS)
                 ds = ds.sel(presentation=ds['presentation'][mask])
             
-        ids = list(ds.presentation.stimulus.values)
+        ids = list(ds.presentation.stimulus.values.astype(str))
             
         if return_data:
             return ids, ds
         else:
             return ids
         
-        
             
 def filter_activations(data: xr.DataArray, ids: list) -> torch.Tensor:
-            
-        """
-    
-        Filters model activations using image ids.
-
-
-        Parameters
-        ----------
-        data:
-            Model activation data
-            
-        ids:
-            image ids
         
-
-        Returns
-        -------
-        A Tensor of model activations filtered by image ids
-        
-        """
-        
-       
-        #data = data.set_index({'presentation':'stimulus'})
-        #formatted_ids = [f"image{num:05d}" for num in ids]
-        #print('neural ids:',ids[:10])
-        #print('activation ids:',data.stimulus_id.values[:10])
         data = data.where(data['stimulus_id'].isin(ids),drop=True)
-
-        #activations = data.sel(presentation=ids)
         data = data.sortby('presentation', ascending=True)
 
         return data.values
-            
-        
-        
-        
-def set_new_coord(ds):
-    
-    new_coord_data = np.core.defchararray.add(np.core.defchararray.add(ds.x.values.astype(str), ds.y.values.astype(str)), ds.z.values.astype(str))
-    new_coord = xr.DataArray(new_coord_data, dims=['neuroid'])
-    ds = ds.assign_coords(xyz=new_coord)
-    
-    return ds
 
 
-
-def filter_roi(subject,roi):
-
-    ds_source = xr.open_dataset(f'/data/rgautha1/cache/bonner-caching/neural-dimensionality/data/dataset=allen2021.natural_scenes/betas/resolution=1pt8mm/preprocessing=fithrf/z_score=True/roi={roi}/subject={subject}.nc',engine='netcdf4')
-
-    ds_target = xr.open_dataset(os.path.join(NSD_NEURAL_DATA,f'roi=general/preprocessed/z_score=session.average_across_reps=True/subject={subject}.nc'), engine='netcdf4')
-
-    ds_source = set_new_coord(ds_source)
-    ds_target = set_new_coord(ds_target)
-
-    source_ids = ds_source['xyz'].values
-    mask = ds_target['xyz'].isin(source_ids)
-    ds_target = ds_target.sel(neuroid=ds_target['neuroid'][mask])
-    
-    return ds_target
 
 

@@ -2,6 +2,16 @@ import os
 import csv
 from config import DATA
 
+# def load_nsd_images():
+#     """
+#     Loads the file paths of natural scene images from the NSD_IMAGES directory.
+
+#     Returns:
+#         list: A sorted list of full paths to the natural scene images.
+#     """
+#     NSD_IMAGES = os.path.join(DATA,'naturalscenes','images')
+#     return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])
+
 def load_nsd_images():
     """
     Loads the file paths of natural scene images from the NSD_IMAGES directory.
@@ -10,8 +20,7 @@ def load_nsd_images():
         list: A sorted list of full paths to the natural scene images.
     """
     NSD_IMAGES = os.path.join(DATA,'naturalscenes','images')
-    return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])
-
+    return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])[::10]
 
 def load_majaj_images(demo=False):
     """
@@ -114,7 +123,7 @@ def get_image_labels(dataset_name, image_paths):
     match dataset_name:
         
         case 'naturalscenes' | 'naturalscenes_shuffled':
-            return [int(os.path.basename(i).strip('image.png')) for i in image_paths]
+            return [os.path.basename(i).strip('.png') for i in image_paths]
         
         case 'majajhong' | 'majajhong_shuffled' | 'majajhong_demo' | 'majajhong_demo_shuffled':
             MAJAJ_NAME_DICT = os.path.join(DATA,'majajhong','image_dicarlo_hvm-public.csv')

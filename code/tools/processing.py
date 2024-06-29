@@ -31,7 +31,7 @@ def cache(file_name_func):
             cache_path = os.path.join(CACHE, file_name)
             
             if os.path.exists(cache_path):
-                logging.info('Loading processed images...')
+                logging.info('Loading processed images')
                 with open(cache_path, 'rb') as f:
                     return pickle.load(f)
             

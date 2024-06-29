@@ -22,13 +22,13 @@ def untrained_models_(dataset, cfg, batch_size, device):
         for model_name in MODELS:
             for features in cfg[dataset]['models'][model_name]['features']:
                 
+                logging.info(f"Model: {model_name}, Features: {features}, Region: {cfg[dataset]['regions']}")
                 # get model identifier
                 activations_identifier = load_full_identifier(model_name=model_name, 
                                                               features=features, 
                                                               layers=cfg[dataset]['models'][model_name]['layers'], 
                                                               dataset=dataset
                                                               )
-                logging.info(f'Model: {activations_identifier}, Region: {region}')
                     
                 model = load_model(model_name=model_name, 
                                    features=features, 
@@ -43,6 +43,7 @@ def untrained_models_(dataset, cfg, batch_size, device):
                 del _ 
     
     
+                logging.info(f"Predicting neural data from model activations")
                 # predict neural data in a cross validated manner
                 NeuralRegression(activations_identifier=activations_identifier, 
                                  dataset=dataset,
@@ -50,6 +51,7 @@ def untrained_models_(dataset, cfg, batch_size, device):
                                  device= device).predict_data()
                 
 
+            logging.info(f"Getting a bootstrap distribution of scores")
             # get a bootstrap distribution of r-values between predicted and actual neural responses
             get_bootstrap_rvalues(model_name = model_name,
                     features=cfg[dataset]['models'][model_name]['features'],

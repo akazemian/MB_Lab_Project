@@ -24,11 +24,12 @@ def pretrained_alexnet_(dataset, cfg, batch_size, device):
     
         for layer_num in range(1,6):
                     
+            logging.info(f"Model: {MODEL_NAME}, Conv layer: {layer_num}, Region: {cfg[dataset]['regions']}")
+
             # get model identifier
             activations_identifier = load_full_identifier(model_name=MODEL_NAME, 
                                                           layers=layer_num, 
                                                           dataset=dataset)
-            logging.info(f'Model: {activations_identifier}, Region: {region}')
             indintifier_list.append(activations_identifier)
                     
             model = load_model(model_name=MODEL_NAME, 
@@ -42,12 +43,14 @@ def pretrained_alexnet_(dataset, cfg, batch_size, device):
                         batch_size=batch_size).get_array(activations_identifier) 
         
         
+        logging.info(f"Predicting neural data from model activations")
         # predict neural data from the best layer's activations in a cross validated manner
         NeuralRegression(activations_identifier=indintifier_list, dataset=dataset,
                          region=region, 
                          device= device).predict_data()
 
 
+        logging.info(f"Getting a bootstrap distribution of scores")
         # get a bootstrap distribution of r-values between predicted and actual neural responses
         get_bootstrap_rvalues(model_name= 'alexnet',
                               features=[None], layers = None,

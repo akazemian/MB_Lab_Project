@@ -23,12 +23,13 @@ def non_linearity_(dataset, cfg, batch_size, device):
     
         for features in cfg[dataset]['analysis'][ANALYSIS]['features']:
                     
+            logging.info(f"Non linearity type: {non_linearity}")
+
             # get model identifier
             activations_identifier = load_full_identifier(model_name=MODEL_NAME, features=features, 
                                                           layers=cfg[dataset]['analysis'][ANALYSIS]['layers'], 
                                                           dataset=dataset,
                                                           non_linearity = non_linearity)
-            logging.info(f"Model: {activations_identifier}, Region: {cfg[dataset]['regions']}")
                 
             model = Expansion5L(filters_5=features, 
                                 non_linearity=non_linearity,
@@ -42,7 +43,7 @@ def non_linearity_(dataset, cfg, batch_size, device):
                                batch_size=batch_size).get_array(activations_identifier) 
             del data
     
-    
+            logging.info(f"Predicting neural data from model activations")
             # predict neural data in a cross validated manner
             NeuralRegression(activations_identifier=activations_identifier,
                        dataset=dataset,
@@ -50,7 +51,8 @@ def non_linearity_(dataset, cfg, batch_size, device):
                        device= device).predict_data()
 
             gc.collect()
-
+            
+    logging.info(f"Getting a bootstrap distribution of scores")
     # get a bootstrap distribution of r-values between predicted and actual neural responses
     get_bootstrap_rvalues(model_name = MODEL_NAME,
             features=cfg[dataset]['analysis'][ANALYSIS]['features'],

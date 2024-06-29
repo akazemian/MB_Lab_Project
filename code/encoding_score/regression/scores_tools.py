@@ -102,7 +102,6 @@ def get_bootstrap_rvalues(model_name, features, layers, subjects, dataset, regio
         file_path = os.path.join(RESULTS_PATH, file_name + '_' + dataset + '_' + region + '.pkl')
         
     if not os.path.exists(file_path):
-        logging.info('Computing bootstrap distribution of r-values...')
         data_dict = {'model': [], 'features': [], 'pcs': [], 'init_type': [], 'nl_type': [],
                      'score': [], 'lower': [], 'upper': []}
         

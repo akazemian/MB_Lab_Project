@@ -52,7 +52,6 @@ class _PCA:
 
     @cache(cache_file)
     def _fit(self, iden, X):  
-        logging.info('Obtaining PCs...')
         X = torch.Tensor(X)
         pca = PCA(n_components=self.n_components)
         pca.fit(X)

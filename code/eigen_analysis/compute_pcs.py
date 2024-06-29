@@ -18,8 +18,6 @@ def compute_model_pcs(model_name:str, features:int, layers:int, batch_size:int,
                                                   features=features, 
                                                   layers=layers, 
                                                   dataset=dataset)
-    logging.info(f"Extracting activations from model ({activations_identifier}) for computing PCs... ")
-    
     # load model
     model = load_model(model_name=model_name, 
                        features=features, 
@@ -31,8 +29,6 @@ def compute_model_pcs(model_name:str, features:int, layers:int, batch_size:int,
                 dataset=dataset, 
                 batch_size=batch_size,
                 device= device).get_array(activations_identifier)   
-    
-    logging.info(f"Computing PCs... ")
     
     # load the saved activations
     data = xr.open_dataarray(os.path.join(CACHE,'activations',activations_identifier),
