@@ -95,7 +95,7 @@ The ouput is a tensor of size NxP, where N = the number of image and P = the num
 
 ### Initial setup
 
-First, download the data used in all analysis [here](https://www.dropbox.com/scl/fo/iklb3sn7qg62abkoa1k35/AP6_50egIvh0Ah6fhcwr46o?rlkey=0fh7sslil5ss24fewcdgy03ig&st=v5tkwwbh&dl=0) and unzip each dataset folder. The download may take a while (~15 minutes) given the size of the datasets. To run only the demo, download the majajhong and places folders.
+First, download the data used in all analysis [here](https://www.dropbox.com/scl/fo/ow0v17ldsax4iddtp82aj/AEwkme4Crdi0d80hv2zigC8?rlkey=ne57t05d1dkgotkymtxxyigzm&st=pbuh26zf&dl=0) and unzip each dataset folder. The download may take a while (~15 minutes) given the size of the datasets. To run only the demo, download the majajhong and places folders.
 
 
 Clone this repository and navigate to the repository folder.
