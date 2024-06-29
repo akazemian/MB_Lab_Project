@@ -111,22 +111,22 @@ pip install .
 ```
 
 ## Running the demo
-There are 2 datasets used for the demo. For analyses involving neural data, a subset of the majajhong dataset (50 images) is used. For analyses relating to image classification, a subset of the Places train set (500 images) and validation set (500 images) is used. Further, the smallest version of each untrained model is considered for all parts of the demo. Each demo has a separate notebook in the folder ```demo_notebooks```, where the output can be visualized. Alternatively, they scripts for generating demo results can be run as shown below. Running all demo files takes 4-5 minutes.  
+There are 2 datasets used for the demo. For analyses involving neural data, a subset of the majajhong dataset (50 images) is used. For analyses relating to image classification, a subset of the Places train set (500 images) and validation set (500 images) is used. Further, the smallest version of each untrained model is considered for all parts of the demo. Each demo has a separate notebook in the folder ```demo_notebooks```, where the output can be visualized. Alternatively, the scripts for generating demo results can be run as shown below. Running all demo files takes 4-5 minutes.  
 
-To generate brain similarity score for the untrained models and alexnet (total time: 7-8 seconds): 
+To generate brain similarity scores for the untrained models and alexnet (total time: 7-8 seconds): 
 ```
-python demo/main_results.py --dataset majajhong
+python demo/main_results.py 
 ```
 To follow this in a notebook:
 
 To generate the PCA results (total time: 14-15 seconds):
 ```
-python demo/pca_analysis.py --dataset majajhong
+python demo/pca_analysis.py
 ```
 
 To generate model ablation results (total time: 80 seconds):
 ```
-python demo/ablation_studies.py --dataset majajhong
+python demo/ablation_studies.py
 ```
 
 To generate image classification results using the places dataset (total time: 2-3 minutes):
