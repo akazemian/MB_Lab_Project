@@ -94,7 +94,7 @@ The ouput is a tensor of size NxP, where N = the number of image and P = the num
 
 ### Initial setup
 
-First, download the data used in all analysis [here](https://www.dropbox.com/scl/fo/ow0v17ldsax4iddtp82aj/AEwkme4Crdi0d80hv2zigC8?rlkey=sfzri315280ohr72mwyz9850j&st=4jxnohjt&dl=0). 
+First, download the data used in all analysis [here](https://www.dropbox.com/scl/fo/ow0v17ldsax4iddtp82aj/AEwkme4Crdi0d80hv2zigC8?rlkey=sfzri315280ohr72mwyz9850j&st=4jxnohjt&dl=0) and unzip each dataset folder. The download may take a while (x minutes) given the size of the datasets. To run only the demo, download the majajhong and places folders.
 
 
 Clone this repository and navigate to the repository folder.
@@ -105,13 +105,13 @@ cd untrained_models_of_visual_cortex
 
 In the root directory, open ```config.py``` and set the path where the data was downloaded (```DATA```). 
 
-Install required packages:
+Install required packages (1-2 minutes)
 ```
 pip install . 
 ```
 
 ## Running the demo
-There are 2 datasets used for the demo. For analyses involving neural data, a truncated version of the majajhong dataset (50 images) is used. For analyses relating to image classification, a truncated version of the Places train set (500 images) and validation set (500 images) is used. Further, the smallest version of each untrained model is considered for all parts of the demo. Each demo has a separate notebook in the folder ```demo_notebooks```, where the output can be visualized. Alternatively, they scripts for generating demo results can be run as shown below:
+There are 2 datasets used for the demo. For analyses involving neural data, a subset of the majajhong dataset (50 images) is used. For analyses relating to image classification, a subset of the Places train set (500 images) and validation set (500 images) is used. Further, the smallest version of each untrained model is considered for all parts of the demo. Each demo has a separate notebook in the folder ```demo_notebooks```, where the output can be visualized. Alternatively, they scripts for generating demo results can be run as shown below. Running all demo files takes 4-5 minutes.  
 
 To generate brain similarity score for the untrained models and alexnet (total time: 7-8 seconds): 
 ```
