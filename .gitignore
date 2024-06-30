@@ -1,0 +1,6 @@
+# .gitignore
+
+# Ignore build artifacts
+build/
+dist/
+*.egg-info/
