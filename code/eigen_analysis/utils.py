@@ -48,11 +48,11 @@ class _PCA:
             os.mkdir(os.path.join(CACHE,'pca'))
         
     @staticmethod
-    def cache_file(iden):
+    def cache_file(iden, X):
         return os.path.join('pca',iden)
 
     @cache(cache_file)
-    def _fit(self, X):  
+    def _fit(self, iden, X):  
         X = torch.Tensor(X)
         pca = PCA(n_components=self.n_components)
         pca.fit(X)

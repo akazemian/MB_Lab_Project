@@ -1,0 +1,14 @@
+LICENSE
+README.md
+setup.py
+code/__init__.py
+code/ablation_studies.py
+code/classification.py
+code/main_results.py
+code/model_configs.py
+code/pca_analysis.py
+untrained_models_of_visual_cortex.egg-info/PKG-INFO
+untrained_models_of_visual_cortex.egg-info/SOURCES.txt
+untrained_models_of_visual_cortex.egg-info/dependency_links.txt
+untrained_models_of_visual_cortex.egg-info/requires.txt
+untrained_models_of_visual_cortex.egg-info/top_level.txt

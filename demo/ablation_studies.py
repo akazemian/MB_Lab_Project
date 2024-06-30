@@ -1,4 +1,3 @@
-import time
 import logging
 import argparse
 
@@ -39,12 +38,10 @@ def main(batch_size, device):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run scripts with dataset selection.")
-    parser.add_argument('--dataset', required=True, help="Specify the dataset name",
-                        type=str, choices=['naturalscenes', 'majajhong'])
     parser.add_argument('--device', help="Specify device name",
                         type=str, default = "cuda", choices=['cpu', 'cuda'])
     parser.add_argument('--batchsize', help="Specify batch size",
                         type=int, default=50)
     args = parser.parse_args()
 
-    main(args.dataset, args.batchsize, args.device)
+    main(args.batchsize, args.device)
