@@ -6,16 +6,6 @@ from dotenv import load_dotenv
 load_dotenv()
 DATA = os.getenv("DATA")
 
-# def load_nsd_images():
-#     """
-#     Loads the file paths of natural scene images from the NSD_IMAGES directory.
-
-#     Returns:
-#         list: A sorted list of full paths to the natural scene images.
-#     """
-#     NSD_IMAGES = os.path.join(DATA,'naturalscenes','images')
-#     return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])
-
 def load_nsd_images():
     """
     Loads the file paths of natural scene images from the NSD_IMAGES directory.
@@ -24,7 +14,17 @@ def load_nsd_images():
         list: A sorted list of full paths to the natural scene images.
     """
     NSD_IMAGES = os.path.join(DATA,'naturalscenes','images')
-    return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])[::10]
+    return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])
+
+# def load_nsd_images():
+#     """
+#     Loads the file paths of natural scene images from the NSD_IMAGES directory.
+
+#     Returns:
+#         list: A sorted list of full paths to the natural scene images.
+#     """
+#     NSD_IMAGES = os.path.join(DATA,'naturalscenes','images')
+#     return sorted([os.path.join(NSD_IMAGES,image) for image in os.listdir(NSD_IMAGES)])[::10]
 
 def load_majaj_images(demo=False):
     """

@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 from ..regression.regression_tools import regression_shared_unshared
 from ..regression.torch_cv import TorchRidgeGCV
-from code.encoding_score.benchmarks.benchmarks_configs import PREDS_PATH
+from code.encoding_score.benchmarks.benchmarks_configs import PREDS_PATH, ALPHA_RANGE, NSD_NEURAL_DATA
 
 load_dotenv()
 warnings.filterwarnings('ignore')
@@ -179,12 +179,12 @@ def load_nsd_data(mode: str, subject: int, region: str, return_data=True) -> tor
         
         SHARED_IDS = pickle.load(open(os.path.join(NSD_NEURAL_DATA, 'nsd_ids_shared'), 'rb'))
         SHARED_IDS = [image_id.strip('.png') for image_id in SHARED_IDS]
-        IDS_TRUNCATED = pickle.load(open(os.path.join(NSD_NEURAL_DATA, 'ids_truncated'), 'rb'))
-        SHARED_IDS = list(set(SHARED_IDS) & set(IDS_TRUNCATED))
+        # IDS_TRUNCATED = pickle.load(open(os.path.join(NSD_NEURAL_DATA, 'ids_truncated'), 'rb'))
+        # SHARED_IDS = list(set(SHARED_IDS) & set(IDS_TRUNCATED))
 
         ds = xr.open_dataset(os.path.join(NSD_NEURAL_DATA,region,'preprocessed',f'subject={subject}.nc'),engine='netcdf4')
-        mask = ds.presentation.stimulus.isin(IDS_TRUNCATED)
-        ds = ds.sel(presentation=ds['presentation'][mask])
+        # mask = ds.presentation.stimulus.isin(IDS_TRUNCATED)
+        # ds = ds.sel(presentation=ds['presentation'][mask])
         
         if mode == 'unshared':
                 mask = ~ds.presentation.stimulus.isin(SHARED_IDS)
