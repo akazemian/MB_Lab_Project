@@ -5,10 +5,14 @@ import logging
 
 import torch
 from sklearn.decomposition import PCA
+from dotenv import load_dotenv
 
-from config import CACHE, setup_logging
+from config import setup_logging
+
 setup_logging()
+load_dotenv()
 
+CACHE = os.getenv("CACHE")
 
 def cache(file_name_func):
 
@@ -33,10 +37,7 @@ def cache(file_name_func):
     return decorator
 
 
-
-
 class _PCA:
-    
     def __init__(self,
                  n_components:int=None,
                  device:str = 'cuda'):
@@ -47,11 +48,11 @@ class _PCA:
             os.mkdir(os.path.join(CACHE,'pca'))
         
     @staticmethod
-    def cache_file(iden, X):
+    def cache_file(iden):
         return os.path.join('pca',iden)
 
     @cache(cache_file)
-    def _fit(self, iden, X):  
+    def _fit(self, X):  
         X = torch.Tensor(X)
         pca = PCA(n_components=self.n_components)
         pca.fit(X)

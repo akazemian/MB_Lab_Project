@@ -1,6 +1,10 @@
 import os
 import csv
-from config import DATA
+
+from dotenv import load_dotenv
+
+load_dotenv()
+DATA = os.getenv("DATA")
 
 # def load_nsd_images():
 #     """

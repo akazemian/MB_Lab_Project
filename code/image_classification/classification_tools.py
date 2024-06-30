@@ -9,12 +9,15 @@ from sklearn.neighbors import NearestCentroid
 from sklearn.utils.validation import check_array, check_is_fitted
 from sklearn.metrics.pairwise import pairwise_distances
 from sklearn.model_selection import StratifiedKFold, KFold
+from dotenv import load_dotenv
 
 import numpy as np
 from scipy.special import softmax
 
 from code.tools.loading import load_places_cat_labels
-from config import CACHE
+
+load_dotenv()
+CACHE = os.getenv("CACHE")
 
 class NearestCentroidDistances(NearestCentroid):
     def predict_distances(self, X):

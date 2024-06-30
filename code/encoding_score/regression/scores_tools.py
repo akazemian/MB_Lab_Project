@@ -11,12 +11,10 @@ from scipy.spatial.distance import pdist, squareform
 from scipy.stats import spearmanr
 
 from code.model_activations.models.utils import load_full_identifier, find_best_layer_iden
-from config import CACHE, setup_logging, RESULTS_PATH
+from config import setup_logging, RESULTS_PATH
+from code.encoding_score.benchmarks.benchmarks_configs import PREDS_PATH
 
 setup_logging()
-
-PREDS_PATH = os.path.join(CACHE,'neural_preds')
-
 
 if not os.path.exists(RESULTS_PATH):
     os.mkdir(RESULTS_PATH)

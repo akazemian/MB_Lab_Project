@@ -5,10 +5,14 @@ import gc
 import logging
 
 import torch
+from dotenv import load_dotenv
 
-from config import CACHE, setup_logging
+from config import setup_logging
 
+load_dotenv()
 setup_logging()
+
+CACHE = os.getenv("CACHE")
 
 def register_pca_hook(x: torch.Tensor, pca_file_name: str, n_components, 
                       device) -> torch.Tensor:

@@ -1,13 +1,18 @@
-from config import DATA
+import os
 
+from dotenv import load_dotenv
+import xarray as xr
+
+load_dotenv()
+DATA = os.getenv("CACHE")
 RAW_DATA_PATH = '/data/shared/brainio/brain-score/assy_dicarlo_MajajHong2015_public.nc' #where raw data is downloaded 
 PROCESSED_DATA = os.path.join(DATA,'majajhong')
 
 # get shared stimulus ids
 regions = ['IT','V4']
 subjects = ['Tito','Chabo']
-# saving each region from each subject separately 
 
+# saving each region from each subject separately 
 for subject in subjects:
     for region in regions:
         

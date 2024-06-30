@@ -1,8 +1,8 @@
 import os
 import xarray as xr
-from config import DATA
 
-NSD_NEURAL_DATA = os.path.join(DATA,'naturalscenes')
+from code.encoding_score.benchmarks.benchmarks_configs import NSD_NEURAL_DATA
+
 regions = ['early visual stream', 'midventral visual stream', 'ventral visual stream']
 
 

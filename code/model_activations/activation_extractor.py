@@ -10,16 +10,19 @@ from torch import nn
 from torch.autograd import Variable
 import xarray as xr
 import numpy as np
+from dotenv import load_dotenv
 
 from code.tools.loading import load_image_paths, get_image_labels
 from code.tools.processing import ImageProcessor
 from .utils import cache, register_pca_hook
-from config import CACHE, setup_logging
+from config import setup_logging
 
+load_dotenv()
 setup_logging()
 
 warnings.warn('my warning')
 SUBMODULE_SEPARATOR = '.'
+CACHE = os.getenv("CACHE")
 PATH_TO_PCA = os.path.join(CACHE, 'pca')
 
 class PytorchWrapper:

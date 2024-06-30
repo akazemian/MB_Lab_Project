@@ -9,15 +9,17 @@ import torch.nn as nn
 from torchvision import transforms
 from PIL import Image
 from tqdm import tqdm
+from dotenv import load_dotenv
 
-from config import CACHE, setup_logging
+from config import setup_logging
 
+load_dotenv()
 setup_logging()
+torch.manual_seed(42)
 
+CACHE = os.getenv("CACHE")
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
-
-torch.manual_seed(42)
 INDICES = torch.randperm(224**2)
 
 def cache(file_name_func):

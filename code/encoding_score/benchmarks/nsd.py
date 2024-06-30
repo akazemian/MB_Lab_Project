@@ -9,17 +9,17 @@ import numpy as np
 import torch
 from tqdm import tqdm
 from sklearn.linear_model import Ridge
+from dotenv import load_dotenv
 
-from config import CACHE, DATA
 from ..regression.regression_tools import regression_shared_unshared
 from ..regression.torch_cv import TorchRidgeGCV
+from code.encoding_score.benchmarks.benchmarks_configs import PREDS_PATH
 
+load_dotenv()
 warnings.filterwarnings('ignore')
 random.seed(0)
-PREDS_PATH = os.path.join(CACHE,'neural_preds')
-NSD_NEURAL_DATA = os.path.join(DATA,'naturalscenes')
 
-ALPHA_RANGE = [10**i for i in range(10)]
+CACHE = os.getenv("CACHE")
 
 def normalize(X, X_min=None, X_max=None, use_min_max=False):
     if use_min_max:

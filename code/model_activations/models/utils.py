@@ -1,7 +1,7 @@
 from typing import Optional, Union
 import os
 
-from config import CACHE
+from code.encoding_score.benchmarks.benchmarks_configs import PREDS_PATH
 
 # Constants
 ALEXNET_CONV_LAYERS = {1: 64, 2: 192, 3: 384, 4: 256, 5: 256}
@@ -9,7 +9,6 @@ ALEXNET_LAYER_NUMS = {1: 2, 2: 5, 3: 7, 4: 9, 5: 12}
 VALID_ALEXNET_LAYERS = [1, 2, 3, 4, 5, 'best']
 LAYER_1_RANDOM_FILTERS = 3000
 VIT_BLOCK_NUM = 11
-PREDS_PATH = os.path.join(CACHE,'neural_preds')
 
 
 def find_best_layer_iden(dataset,region):
@@ -17,7 +16,7 @@ def find_best_layer_iden(dataset,region):
     for file_name in file_names:
         if ('alexnet' in file_name) and (f'dataset={dataset}_{region}' in file_name):
             return file_name.split(f'_{region}')[0]
-    raise Error(f'Best layer file for does {dataset}, {region}, {subject} not exist')
+    print(f'Best layer file does not exist')
     return None
     
 def iden_generator(*args) -> str:

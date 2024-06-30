@@ -7,24 +7,14 @@ import torch
 from tqdm import tqdm
 from sklearn.linear_model import Ridge
 
-from config import CACHE, DATA
 from ..regression.regression_tools import regression_shared_unshared
 from ..regression.torch_cv import TorchRidgeGCV
-
+from code.encoding_score.benchmarks.benchmarks_configs import CACHE, MAJAJ_DATA, PREDS_PATH
+from code.encoding_score.benchmarks.benchmarks_configs import MAJAJ_TRAIN_IDS, MAJAJ_TEST_IDS, TRAIN_IDS_DEMO, TEST_IDS_DEMO, ALPHA_RANGE
 
 random.seed(0)
 
-DATASET = 'majajhong'
 SUBJECTS = ['Chabo','Tito']
-
-MAJAJ_DATA = os.path.join(DATA,'majajhong')
-PREDS_PATH = os.path.join(CACHE,'neural_preds')
-
-TRAIN_IDS =  pickle.load(open(os.path.join(MAJAJ_DATA,'majaj_train_ids'), "rb"))
-TEST_IDS =  pickle.load(open(os.path.join(MAJAJ_DATA,'majaj_test_ids'), "rb"))
-TRAIN_IDS_DEMO =  pickle.load(open(os.path.join(MAJAJ_DATA,'majaj_train_ids_demo'), "rb"))
-TEST_IDS_DEMO =  pickle.load(open(os.path.join(MAJAJ_DATA,'majaj_test_ids_demo'), "rb"))
-ALPHA_RANGE = [10**i for i in range(10)]
 
 def majajhong_scorer(activations_identifier: str, 
                        region: str,
@@ -182,9 +172,9 @@ def load_majaj_data(subject: str, region: str, mode: bool = None) -> torch.Tenso
         match mode:
             
             case 'train':
-                neural_data = neural_data.where(neural_data.stimulus_id.isin(TRAIN_IDS),drop=True)
+                neural_data = neural_data.where(neural_data.stimulus_id.isin(MAJAJ_TRAIN_IDS),drop=True)
             case 'test':
-                neural_data = neural_data.where(neural_data.stimulus_id.isin(TEST_IDS),drop=True)
+                neural_data = neural_data.where(neural_data.stimulus_id.isin(MAJAJ_TEST_IDS),drop=True)
             case 'train_demo':
                   neural_data = neural_data.where(neural_data.stimulus_id.isin(TRAIN_IDS_DEMO),drop=True)
             case 'test_demo':
@@ -221,9 +211,9 @@ def load_activations(activations_identifier: str, mode: bool = None) -> torch.Te
 
         match mode:
             case 'train':
-                activations_data = activations_data.sel(presentation=TRAIN_IDS)
+                activations_data = activations_data.sel(presentation=MAJAJ_TRAIN_IDS)
             case 'test':            
-                activations_data = activations_data.sel(presentation=TEST_IDS)           
+                activations_data = activations_data.sel(presentation=MAJAJ_TEST_IDS)           
             case 'train_demo':
                 activations_data = activations_data.sel(presentation=TRAIN_IDS_DEMO)
             case 'test_demo':            

@@ -5,15 +5,19 @@ import argparse
 import time
 
 import xarray as xr
+from dotenv import load_dotenv
 
-from config import CACHE, RESULTS_PATH, setup_logging
+from config import RESULTS_PATH, setup_logging
 from model_configs import analysis_cfg as cfg
 from code.model_activations.models.utils import load_model, load_full_identifier
 from code.model_activations.activation_extractor import Activations
 from code.image_classification.classification_tools import get_Xy, cv_performance
 from code.eigen_analysis.compute_pcs import compute_model_pcs
 
+load_dotenv()
 setup_logging()
+
+CACHE = os.getenv("CACHE")
 
 if not os.path.exists(CACHE):
     os.makedirs(CACHE)

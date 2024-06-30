@@ -1,15 +1,19 @@
 import os
 import pickle
-import logging
 
 import xarray as xr
+from dotenv import load_dotenv
 
 from code.eigen_analysis.utils import _PCA
 from code.model_activations.models.utils import load_model, load_full_identifier
 from code.model_activations.activation_extractor import Activations
-from config import CACHE, DATA, setup_logging
+from config import setup_logging
 
 setup_logging()
+load_dotenv()
+
+CACHE = os.getenv("CACHE")
+DATA = os.getenv("DATA")
 
 def compute_model_pcs(model_name:str, features:int, layers:int, batch_size:int,
                       dataset:str, components:int, device:str):

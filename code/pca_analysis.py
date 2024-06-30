@@ -4,6 +4,7 @@ import argparse
 import logging
 
 import numpy as np 
+from dotenv import load_dotenv
 
 from model_configs import analysis_cfg as cfg
 from model_activations.models.utils import load_model, load_full_identifier
@@ -11,9 +12,12 @@ from model_activations.activation_extractor import Activations
 from encoding_score.regression.get_betas import NeuralRegression
 from encoding_score.regression.scores_tools import get_bootstrap_rvalues
 from eigen_analysis.compute_pcs import compute_model_pcs
-from config import CACHE, setup_logging
+from config import setup_logging
 
 setup_logging()
+load_dotenv()
+
+CACHE = os.getenv('CACHE')
 MODEL_NAME = 'expansion'
 
 def main(dataset, device, batch_size):

@@ -4,8 +4,9 @@ import pickle
 import argparse
 
 import xarray as xr
+from dotenv import load_dotenv
 
-from config import CACHE, RESULTS_PATH, setup_logging
+from config import RESULTS_PATH, setup_logging
 from tools.loading import load_places_cat_labels
 from model_activations.models.utils import load_model, load_full_identifier
 from model_configs import analysis_cfg as cfg
@@ -14,7 +15,10 @@ from image_classification.config_ import MODEL_NAMES, PCA_DATASET, DATASET, NUM_
 from image_classification.classification_tools import get_Xy, cv_performance
 from eigen_analysis.compute_pcs import compute_model_pcs
 
+load_dotenv()
 setup_logging()
+
+CACHE = os.getenv('CACHE')
 
 if not os.path.exists(CACHE):
     os.makedirs(CACHE)

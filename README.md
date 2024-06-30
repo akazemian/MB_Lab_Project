@@ -33,23 +33,24 @@ The code has been tested on Python==3.10.14
 ### Python dependencies
 The following is a list of python libraries with version numbers required to run all scripts:
 ```
-pillow>=10.3.0
-opencv-python>=4.10.0.84
-loguru>=0.7.2
-matplotlib>=3.9.0
-numpy>=2.0.0
-pandas>=2.2.2
-scipy>=1.13.1
-seaborn>=0.13.2
-scikit-learn>=1.5.0
-timm>=1.0.7
-torch>=2.3.1
-torchmetrics>=1.4.0.post0
-torchvision>=0.18.1
-tqdm>=4.66.4
-xarray>=2024.6.0
-netCDF4>=1.7.1
-cupy-cuda12x>=13.2.0
+pillow==10.3.0
+opencv-python==4.10.0.84
+loguru==0.7.2
+matplotlib==3.9.0
+numpy==2.0.0
+pandas==2.2.2
+scipy==1.13.1
+seaborn==0.13.2
+scikit-learn==1.5.0
+timm==1.0.7
+torch==2.3.1
+torchmetrics==1.4.0.post0
+torchvision==0.18.1
+tqdm==4.66.4
+xarray==2024.6.0
+netCDF4==1.7.1
+cupy-cuda12x==13.2.0
+python-dotenv==1.0.1
 ```
 
 # Installation guide
@@ -104,11 +105,13 @@ git clone https://github.com/akazemian/untrained_models_of_visual_cortex.git
 cd untrained_models_of_visual_cortex
 ```
 
-In the root directory, open ```config.py``` and set the path where the data was downloaded (```DATA```). 
+In the root directory, open ```.env``` and set the path for the ```CACHE``` and ```DATA``` (where the data was downloaded) folders. 
 
 Install required packages (1-2 minutes)
 ```
-pip install . 
+conda create -n expansion python==3.10.14
+conda activate expansion
+pip install .
 ```
 
 ## Running the demo
@@ -141,22 +144,22 @@ Navigate to the project directory and make sure to specify the dataset (```majaj
 
 To generate brain similarity score for the untrained models and alexnet: 
 ```
-python encoding_score/main_results.py --dataset majajhong
+python code/main_results.py --dataset majajhong
 ```
 
 To generate the PCA results:
 ```
-python encoding_score/pca_analysis.py --dataset majajhong
+python code/pca_analysis.py --dataset majajhong
 ```
 
 To generate model ablation results:
 ```
-python encoding_score/ablation_studies.py --dataset majajhong
+python code/ablation_studies.py --dataset majajhong
 ```
 
 To generate image classification results using the places dataset:
 ```
-python image_classification/run.py 
+python code/classification.py 
 ```
 
 ### 3. Generating figures

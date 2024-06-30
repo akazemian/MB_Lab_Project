@@ -1,12 +1,13 @@
 import os
-import logging
 
-from config import CACHE, setup_logging
+from dotenv import load_dotenv
 
 from ..benchmarks.majajhong import majajhong_scorer, majajhong_get_best_layer_scores
 from ..benchmarks.nsd import nsd_scorer, nsd_get_best_layer_scores
 
-setup_logging()
+load_dotenv()
+
+CACHE = os.getenv("CACHE")
 
 class NeuralRegression():
     def __init__(self,
