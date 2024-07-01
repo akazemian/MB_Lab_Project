@@ -114,7 +114,7 @@ class ImageProcessor:
 
         for batch in tqdm(dataloader):
             batch = batch.to(self.device)
-            processed_images.append(batch.cpu())
+            processed_images.append(batch)
 
         return torch.cat(processed_images, dim=0)
 
