@@ -182,7 +182,7 @@ class Activations:
 
             # Fill the preallocated array
             batch_activations = batch_data_final['x'].values
-            all_activations[i:i + len(batch_images)] = torch.tensor(batch_activations, device=self.device)
+            all_activations[i:i + len(batch_images)] = torch.tensor(batch_activations, device= "cpu")
             all_labels.extend(batch_labels)
 
             i += self.batch_size
