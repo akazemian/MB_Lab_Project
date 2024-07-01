@@ -169,7 +169,7 @@ class Activations:
         first_batch_activations = get_batch_activations(images[:self.batch_size], labels[:self.batch_size], pytorch_model, self.layer_name, self.pca_iden, self.n_components)
         num_features = first_batch_activations.dims['features']
 
-        all_activations = torch.zeros((num_samples, num_features), device=self.device)
+        all_activations = torch.zeros((num_samples, num_features), device='cpu')
         all_labels = []
 
         logging.info('Batched activations...')
