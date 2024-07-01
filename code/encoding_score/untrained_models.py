@@ -22,7 +22,7 @@ def untrained_models_(dataset, cfg, batch_size, device):
         for model_name in MODELS:
             for features in cfg[dataset]['models'][model_name]['features']:
                 
-                logging.info(f"Model: {model_name}, Features: {features}, Region: {cfg[dataset]['regions']}")
+                logging.info(f"Model: {model_name}, Features: {features}, Region: {region}")
                 # get model identifier
                 activations_identifier = load_full_identifier(model_name=model_name, 
                                                               features=features, 

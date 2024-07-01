@@ -24,7 +24,7 @@ def pretrained_alexnet_(dataset, cfg, batch_size, device):
     
         for layer_num in range(1,6):
                     
-            logging.info(f"Model: {MODEL_NAME}, Conv layer: {layer_num}, Region: {cfg[dataset]['regions']}")
+            logging.info(f"Model: {MODEL_NAME}, Conv layer: {layer_num}, Region: {region}")
 
             # get model identifier
             activations_identifier = load_full_identifier(model_name=MODEL_NAME, 
