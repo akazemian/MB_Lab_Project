@@ -1,6 +1,13 @@
 import logging
 import argparse
 import time
+import os
+import sys
+
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(CURRENT_DIR, os.pardir))
+sys.path.insert(0, ROOT)
 
 from model_configs import model_cfg as cfg
 from config import setup_logging

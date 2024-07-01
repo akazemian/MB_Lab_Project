@@ -2,6 +2,12 @@ import os
 import logging
 import pickle
 import argparse
+import os
+import sys
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(CURRENT_DIR, os.pardir))
+sys.path.insert(0, ROOT)
 
 import xarray as xr
 from dotenv import load_dotenv

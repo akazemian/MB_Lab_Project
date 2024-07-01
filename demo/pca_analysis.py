@@ -3,6 +3,11 @@ import os
 import gc
 import argparse
 import logging
+import sys
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(CURRENT_DIR, os.pardir))
+sys.path.insert(0, ROOT)
 
 import numpy as np 
 from dotenv import load_dotenv

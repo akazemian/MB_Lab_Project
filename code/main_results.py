@@ -1,7 +1,13 @@
 import logging
 import argparse
-from config import setup_logging
+import os
+import sys
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(CURRENT_DIR, os.pardir))
+sys.path.insert(0, ROOT)
+
+from config import setup_logging
 from model_configs import model_cfg as cfg
 from encoding_score.pretrained_alexnet import pretrained_alexnet_
 from encoding_score.untrained_models import untrained_models_
