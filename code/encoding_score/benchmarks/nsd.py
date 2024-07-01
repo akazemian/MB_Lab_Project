@@ -34,14 +34,13 @@ def normalize(X, X_min=None, X_max=None, use_min_max=False):
 def nsd_scorer(activations_identifier: str, 
                region: str,
               device: str):
-    
-        activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',activations_identifier), engine='netcdf4')  
         
         for subject in tqdm(range(8)):
 
             file_path = os.path.join(PREDS_PATH,f'{activations_identifier}_{region}_{subject}.pkl')
             if not os.path.exists(file_path):
             
+                activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',activations_identifier), engine='netcdf4')  
                 ids_train, neural_data_train = load_nsd_data(mode ='unshared',
                                                     subject = subject,
                                                     region = region)
@@ -119,12 +118,12 @@ def get_best_model_layer(activations_identifier, region, device):
 def nsd_get_best_layer_scores(activations_identifier: list, region: str, device:str):
 
         best_layer, best_alphas = get_best_model_layer(activations_identifier, region, device)            
-        activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',best_layer), engine='netcdf4')  
         
         for subject in tqdm(range(8)):
 
             file_path = os.path.join(PREDS_PATH,f'{best_layer}_{region}_{subject}.pkl')
             if not os.path.exists(file_path):
+                activations_data = xr.open_dataarray(os.path.join(CACHE,'activations',best_layer), engine='netcdf4')  
                 ids_train, neural_data_train = load_nsd_data(mode ='unshared',
                                                     subject = subject,
                                                     region = region)
