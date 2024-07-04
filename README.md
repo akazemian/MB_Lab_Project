@@ -18,7 +18,7 @@ The expansion model is a learning-free convolutional neural network based on com
 
 # System requirements
 
-## Harware requirements
+## Hardware requirements
  The code requires only a standard computer with enough CPU and GPU compute power to support all operations. The scripts for replicating the main results use about ~18 GB GPU RAM at peak. 
 
 
