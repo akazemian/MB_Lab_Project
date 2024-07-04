@@ -11,8 +11,8 @@ sys.path.insert(0, ROOT)
 
 from model_configs import model_cfg as cfg
 from config import setup_logging
-from code.encoding_score.pretrained_alexnet import pretrained_alexnet_
-from code.encoding_score.untrained_models import untrained_models_
+from code_.encoding_score.pretrained_alexnet import pretrained_alexnet_
+from code_.encoding_score.untrained_models import untrained_models_
 
 DATASET = "majajhong_demo"
 

@@ -15,10 +15,10 @@ from dotenv import load_dotenv
 
 from config import RESULTS_PATH, setup_logging
 from model_configs import analysis_cfg as cfg
-from code.model_activations.models.utils import load_model, load_full_identifier
-from code.model_activations.activation_extractor import Activations
-from code.image_classification.classification_tools import get_Xy, cv_performance
-from code.eigen_analysis.compute_pcs import compute_model_pcs
+from code_.model_activations.models.utils import load_model, load_full_identifier
+from code_.model_activations.activation_extractor import Activations
+from code_.image_classification.classification_tools import get_Xy, cv_performance
+from code_.eigen_analysis.compute_pcs import compute_model_pcs
 
 load_dotenv()
 setup_logging()
