@@ -25,7 +25,7 @@ The expansion model is a learning-free convolutional neural network based on com
 ## Software requirements
 
 ### OS requirements
-The code has been tested on Fedora Linux 100.fc39.x86_64 as well as Ubuntu XXXX. 
+The code has been tested on Fedora Linux 39 as well as RHEL 9.3. 
 
 ### Python version
 The code has been tested on Python==3.10.14
@@ -55,13 +55,15 @@ python-dotenv==1.0.1
 
 # Installation guide
 
-## Using only the Expansion model
+## Using the Expansion model
 
 - Please download (only) the folder ```/code/model_activations/models```. This is easily done using https://download-directory.github.io/.
   
 
-- Navigate to the repo folder and install requirements:
+- Navigate to the repo folder, then install the requirements:
 ```
+conda create -n expansion_model python==3.10.14
+conda activate expansion_model
 pip install -r requirements.txt 
 ```
 
@@ -109,8 +111,8 @@ In the root directory, open ```.env``` and set the path for the ```CACHE``` and 
 
 Install required packages (1-2 minutes)
 ```
-conda create -n expansion python==3.10.14
-conda activate expansion
+conda create -n expansion_project python==3.10.14
+conda activate expansion_project
 pip install .
 ```
 
@@ -121,7 +123,6 @@ To generate brain similarity scores for the untrained models and alexnet (total 
 ```
 python demo/main_results.py 
 ```
-To follow this in a notebook:
 
 To generate the PCA results (total time: 14-15 seconds):
 ```
