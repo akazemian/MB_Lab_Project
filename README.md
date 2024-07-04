@@ -19,7 +19,7 @@ The expansion model is a learning-free convolutional neural network based on com
 # System requirements
 
 ## Harware requirements
- The code requires only a standard computer with enough CPU and GPU compute power to support all operations.
+ The code requires only a standard computer with enough CPU and GPU compute power to support all operations. The scripts for replicating the main results use about ~18 GB GPU RAM at peak. 
 
 
 ## Software requirements
@@ -140,28 +140,34 @@ python demo/classification.py
 
 ### Replicating results
 
-Navigate to the project directory and make sure to specify the dataset (```majajhong``` or ```naturalscenes```) when running the following.
+Navigate to the project directory and make sure to specify the dataset (```majajhong``` or ```naturalscenes```) and the device (```cuda``` or ```cpu```) when running the following. 
 
 To generate brain similarity score for the untrained models and alexnet: 
 ```
-python code/main_results.py --dataset majajhong
+python code/main_results.py --dataset majajhong --device cuda
 ```
 
 To generate the PCA results:
 ```
-python code/pca_analysis.py --dataset majajhong
+python code/pca_analysis.py --dataset majajhong --device cuda
 ```
 
 To generate model ablation results:
 ```
-python code/ablation_studies.py --dataset majajhong
+python code/ablation_studies.py --dataset majajhong --device cuda
 ```
 
 To generate image classification results using the places dataset:
 ```
-python code/classification.py 
+python code/classification.py --device cuda
 ```
+### Dealing with memory issues
 
+If there are any memory issues when running the above, try:
+- running the script again 
+- changing the batch size with --batchsize.
+- changing the device between cpu and gpu.
+  
 ### 3. Generating figures
 
 Navigate to the ```notebooks``` folder. Here you will find notebooks for generating each figure individually. These are saved in the ```figures``` folder.
